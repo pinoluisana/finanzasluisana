@@ -18,7 +18,7 @@
     <style>
         :root[data-theme="light"] {
             /* Paleta Plana (Sin Degradados) y Descansada */
-            --bg-primary: #F8F7FF;        /* Fondo principal lila suave */
+            --bg-primary: #EAE2F8;        /* Fondo principal lila suave */
             --bg-card: #F4EEFC;           /* Tarjetas base lavanda pastel */
             --bg-card-alt: #E3D7FA;       /* Tarjetas de contraste */
             --bg-input: #DDD0F7;          /* Inputs y campos */
@@ -51,7 +51,7 @@
         }
 
         :root[data-theme="dark"] {
-            /* MODO OSCURO OPTIMIZADO PARA DESCANSAR LA VISTA (Tonos mate, bajo contraste agresivo) */
+            /* MODO OSCURO OPTIMIZADO PARA DESCANSAR LA VISTA */
             --bg-primary: #15131C;        /* Fondo gris/lavanda extremadamente oscuro mate */
             --bg-card: #1F1B29;           /* Tarjetas oscuras mates */
             --bg-card-alt: #2B2538;       /* Elementos secundarios */
@@ -75,7 +75,7 @@
             --stat-weekly-text: #9BF6FF;
 
             --text-main: #E6E1EE;         /* Blanco roto suave para no encandilar */
-            --text-muted: #9E92B3;        /* Texto secundario atenudado */
+            --text-muted: #9E92B3;        /* Texto secundario atenuado */
             --border-color: #312A40;
             --nav-bg: rgba(21, 19, 28, 0.98);
             --radius-lg: 22px;
@@ -107,7 +107,7 @@
 
         .bcv-pill { background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer; box-shadow: var(--card-shadow); color: var(--text-main); }
 
-        /* BANNER PRINCIPAL / BALANCE (Color plano en lugar de degradado) */
+        /* BANNER PRINCIPAL / BALANCE (Color plano) */
         .card-balance { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px; position: relative; box-shadow: var(--card-shadow); }
         .balance-label { font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
         .balance-amount { font-size: 2.3rem; font-weight: 800; margin: 6px 0 2px 0; color: var(--text-main); }
@@ -118,18 +118,19 @@
         .accounts-grid::-webkit-scrollbar { display: none; }
 
         /* TARJETAS DE CUENTAS CON COLORES DISTINTIVOS */
-        .account-card { border: 1px solid var(--border-color); min-width: 150px; padding: 16px; border-radius: var(--radius-md); flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--card-shadow); transition: transform 0.15s; }
+        .account-card { border: 1px solid var(--border-color); min-width: 160px; padding: 16px; border-radius: var(--radius-md); flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--card-shadow); transition: transform 0.15s; }
         .account-card:hover { transform: translateY(-2px); }
         .account-name { font-size: 0.82rem; opacity: 0.85; font-weight: 800; }
         .account-val { font-size: 1.15rem; font-weight: 800; }
         .account-type-tag { font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; align-self: flex-start; background: rgba(0,0,0,0.06); }
 
-        /* BOTONES DE ACCIÓN */
-        .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .btn-action { border: 1px solid var(--border-color); color: var(--text-main); padding: 14px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: var(--card-shadow); transition: transform 0.1s; }
+        /* BOTONES DE ACCIÓN (3 COLUMNAS PARA INCLUIR TRANSFERENCIA) */
+        .actions-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .btn-action { border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 8px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.82rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; box-shadow: var(--card-shadow); transition: transform 0.1s; text-align: center; }
         .btn-action:active { transform: scale(0.98); }
         .btn-action.income { background-color: var(--accent-blue-light); }
         .btn-action.expense { background-color: var(--accent-pink-light); }
+        .btn-action.transfer { background-color: var(--bg-card-alt); }
 
         .section-title { font-size: 1.05rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; margin-top: 4px; color: var(--text-main); }
         .tx-list { display: flex; flex-direction: column; gap: 10px; }
@@ -143,6 +144,7 @@
         .tx-amount { font-size: 1rem; font-weight: 800; }
         .tx-amount.expense { color: var(--accent-pink); }
         .tx-amount.income { color: var(--accent-green); }
+        .tx-amount.transfer { color: var(--accent-primary); }
         .tx-original { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
         .tx-actions { display: flex; gap: 8px; margin-top: 2px; }
         .btn-tx-action { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 2px 4px; }
@@ -209,9 +211,7 @@
         .conversion-preview { font-size: 0.85rem; font-weight: 800; color: var(--text-main); background: var(--bg-card-alt); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .rate-info-tag { font-size: 0.78rem; color: var(--text-muted); font-weight: 700; }
 
-        /* =========================================================
-           ADAPTACIÓN RESPONSIVA PARA VERSIÓN WEB / ESCRITORIO
-        ========================================================= */
+        /* Adaptación Escritorio */
         @media (min-width: 768px) {
             body { padding-bottom: 0; align-items: center; min-height: 100vh; }
             .app-layout { max-width: 1100px; display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 40px 24px; }
@@ -304,12 +304,16 @@
                 </div>
                 <div class="accounts-grid" id="accountsContainer"></div>
 
+                <!-- ACCIONES CON TRES OPCIONES -->
                 <div class="actions-grid">
                     <button class="btn-action expense" onclick="openTxModal('expense')">
-                        <i class="fa-solid fa-arrow-down"></i> Registrar Gasto
+                        <i class="fa-solid fa-arrow-down" style="font-size: 1.1rem;"></i> Registrar Gasto
                     </button>
                     <button class="btn-action income" onclick="openTxModal('income')">
-                        <i class="fa-solid fa-arrow-up"></i> Registrar Ingreso
+                        <i class="fa-solid fa-arrow-up" style="font-size: 1.1rem;"></i> Registrar Ingreso
+                    </button>
+                    <button class="btn-action transfer" onclick="openTransferModal()">
+                        <i class="fa-solid fa-right-left" style="font-size: 1.1rem; color: var(--accent-primary);"></i> Transferir
                     </button>
                 </div>
 
@@ -330,7 +334,7 @@
                     </div>
                 </div>
 
-                <!-- BLOQUES CON COLORES DISTINTOS Y PLÁCIDOS -->
+                <!-- BLOQUES DE ESTADÍSTICAS -->
                 <div class="stats-grid">
                     <div class="stat-card full available">
                         <div class="stat-title">TE QUEDA DISPONIBLE</div>
@@ -346,7 +350,7 @@
                     </div>
                 </div>
 
-                <!-- MÓDULO GESTIÓN EN COLUMNAS (WEB) -->
+                <!-- MÓDULO GESTIÓN EN COLUMNAS -->
                 <div class="management-grid">
                     <!-- MÓDULO GESTIÓN DE CUENTAS -->
                     <div class="management-box">
@@ -371,7 +375,7 @@
                     <i class="fa-solid fa-file-excel"></i> Exportar Mis Datos a Excel (.xlsx)
                 </button>
 
-                <!-- GRÁFICOS EN PARALELO (WEB) -->
+                <!-- GRÁFICOS -->
                 <div class="charts-wrapper">
                     <div class="chart-box">
                         <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-pink);"></i> ¿En qué has gastado?</h4>
@@ -403,7 +407,7 @@
         </button>
     </nav>
 
-    <!-- Modales -->
+    <!-- MODAL AGREGAR / EDITAR CUENTA -->
     <div class="modal-overlay" id="accountModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -413,12 +417,13 @@
             <input type="hidden" id="editingAccId" value="">
             <div class="form-group">
                 <label class="form-label">Nombre de la Cuenta</label>
-                <input type="text" class="form-input" id="accName" placeholder="Ej: Banesco, Tarjeta BNC, Efectivo $">
+                <input type="text" class="form-input" id="accName" placeholder="Ej: Banesco, Tarjeta BNC, Fondo Ahorro">
             </div>
             <div class="form-group">
                 <label class="form-label">Tipo de Cuenta</label>
                 <select class="form-input" id="accType">
                     <option value="debit">Débito / Cuenta Corriente / Efectivo</option>
+                    <option value="savings">Cuenta de Ahorros (Excluida del disponible)</option>
                     <option value="credit">Tarjeta de Crédito</option>
                 </select>
             </div>
@@ -437,6 +442,7 @@
         </div>
     </div>
 
+    <!-- MODAL AGREGAR / EDITAR CATEGORÍA -->
     <div class="modal-overlay" id="categoryModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -464,6 +470,7 @@
         </div>
     </div>
 
+    <!-- MODAL REGISTRAR MOVIMIENTO (GASTO/INGRESO) -->
     <div class="modal-overlay" id="txModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -510,6 +517,54 @@
         </div>
     </div>
 
+    <!-- MODAL NUEVO: TRANSFERENCIA ENTRE CUENTAS -->
+    <div class="modal-overlay" id="transferModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Transferir entre Cuentas</div>
+                <button class="close-btn" onclick="closeModal('transferModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Cuenta Origen (Sale el dinero)</label>
+                <select class="form-input" id="trFromAccount" onchange="onTransferAccountsChanged()"></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Cuenta Destino (Entra el dinero)</label>
+                <select class="form-input" id="trToAccount" onchange="onTransferAccountsChanged()"></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Fecha</label>
+                <input type="date" class="form-input" id="trDate">
+            </div>
+            <div class="form-group">
+                <label class="form-label" id="trAmountLabel">Monto a Transferir</label>
+                <input type="number" step="0.01" class="form-input" id="trAmount" placeholder="0.00" oninput="updateTransferPreview()">
+            </div>
+
+            <!-- CAMPO DINÁMICO DE TASA DE CAMBIO (SOLO VISIBLE CUANDO HAY CONVERSIÓN DE MONEDAS) -->
+            <div class="form-group" id="trRateGroup" style="display: none;">
+                <label class="form-label" style="color: var(--accent-primary);">
+                    <span>Tasa de Cambio Aplicada (Bs. por $)</span>
+                    <small style="font-size:0.75rem; color: var(--text-muted); cursor:pointer;" onclick="resetTransferRateToBCV()">[Usar BCV]</small>
+                </label>
+                <input type="number" step="0.0001" class="form-input" id="trCustomRate" placeholder="Ej: 810.50" oninput="updateTransferPreview()">
+            </div>
+
+            <div class="conversion-preview" id="trPreviewBox">
+                <span>Destino recibirá:</span>
+                <span id="trPreviewValue">0.00</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nota (Opcional)</label>
+                <input type="text" class="form-input" id="trNote" placeholder="Ej: Cambio de dólares a bolívares">
+            </div>
+
+            <button class="btn-submit" onclick="executeTransfer()">Ejecutar Transferencia</button>
+        </div>
+    </div>
+
+    <!-- MODAL GESTIÓN DE TASAS BCV -->
     <div class="modal-overlay" id="rateModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -548,14 +603,13 @@
 
         const TODAY = new Date().toISOString().split('T')[0];
 
-        // Paleta de colores distintivos planos para las cuentas (Modos Claro y Oscuro)
         const accountColorsLight = [
-            { bg: '#CDB4DB', text: '#2B2238' }, // Lila
-            { bg: '#BDE0FE', text: '#1D3557' }, // Celeste
-            { bg: '#FFC8DD', text: '#5C003D' }, // Rosa
-            { bg: '#E2ECE9', text: '#1B4332' }, // Menta
-            { bg: '#FFE5EC', text: '#4A001F' }, // Melocotón
-            { bg: '#D8BBFF', text: '#2A004E' }  /* Violeta */
+            { bg: '#CDB4DB', text: '#2B2238' },
+            { bg: '#BDE0FE', text: '#1D3557' },
+            { bg: '#FFC8DD', text: '#5C003D' },
+            { bg: '#E2ECE9', text: '#1B4332' },
+            { bg: '#FFE5EC', text: '#4A001F' },
+            { bg: '#D8BBFF', text: '#2A004E' }
         ];
 
         const accountColorsDark = [
@@ -574,7 +628,8 @@
             { id: 'cat_4', name: 'Transporte / Gasolina', icon: '🚗', type: 'expense' },
             { id: 'cat_5', name: 'Salud / Farmacia', icon: '💊', type: 'expense' },
             { id: 'cat_6', name: 'Sueldo / Honorarios', icon: '💵', type: 'income' },
-            { id: 'cat_7', name: 'Ventas / Freelance', icon: '📈', type: 'income' }
+            { id: 'cat_7', name: 'Ventas / Freelance', icon: '📈', type: 'income' },
+            { id: 'cat_8', name: 'Transferencia Cuentas', icon: '🔄', type: 'both' }
         ];
 
         window.state = {
@@ -703,6 +758,8 @@
 
             let totalUSD = 0;
             (window.state.accounts || []).forEach(acc => {
+                if (acc.type === 'savings') return;
+
                 if (acc.currency === 'USD') {
                     totalUSD += (acc.type === 'credit' ? -acc.balance : acc.balance);
                 } else {
@@ -723,7 +780,11 @@
             (window.state.accounts || []).forEach((acc, index) => {
                 const isUSD = acc.currency === 'USD';
                 const symbol = isUSD ? '$' : 'Bs.';
-                const typeText = acc.type === 'credit' ? 'Crédito' : 'Débito/Efectivo';
+                
+                let typeText = 'Débito/Efectivo';
+                if (acc.type === 'credit') typeText = 'Crédito';
+                if (acc.type === 'savings') typeText = 'Ahorros (Excluido)';
+
                 const colorScheme = colorsList[index % colorsList.length];
                 
                 accContainer.innerHTML += `
@@ -749,8 +810,12 @@
                 const accountName = accountObj ? accountObj.name : 'General';
 
                 const isExpense = tx.type === 'expense';
-                const sign = isExpense ? '-' : '+';
-                const colorClass = isExpense ? 'expense' : 'income';
+                const isTransfer = tx.type === 'transfer';
+                
+                let sign = '-';
+                let colorClass = 'expense';
+                if (tx.type === 'income') { sign = '+'; colorClass = 'income'; }
+                if (isTransfer) { sign = '🔄'; colorClass = 'transfer'; }
 
                 const html = `
                     <div class="tx-item">
@@ -765,7 +830,7 @@
                             <div class="tx-amount ${colorClass}">${sign}$${tx.amountUSD.toFixed(2)}</div>
                             <div class="tx-original">${tx.currency === 'VES' ? tx.originalAmount.toFixed(2) + ' Bs. (Tasa: ' + tx.appliedRate.toFixed(2) + ')' : '$' + tx.originalAmount.toFixed(2) + ' (≈ ' + (tx.originalAmount * tx.appliedRate).toFixed(2) + ' Bs.)'}</div>
                             <div class="tx-actions">
-                                <button class="btn-tx-action" onclick="editTransaction('${tx.id}')"><i class="fa-solid fa-pen"></i></button>
+                                ${!isTransfer ? `<button class="btn-tx-action" onclick="editTransaction('${tx.id}')"><i class="fa-solid fa-pen"></i></button>` : ''}
                                 <button class="btn-tx-action delete" onclick="deleteTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
@@ -780,6 +845,8 @@
             
             let totalUSD = 0;
             (window.state.accounts || []).forEach(acc => {
+                if (acc.type === 'savings') return;
+
                 if (acc.currency === 'USD') {
                     totalUSD += (acc.type === 'credit' ? -acc.balance : acc.balance);
                 } else {
@@ -823,12 +890,13 @@
             (window.state.accounts || []).forEach((acc, index) => {
                 const symbol = acc.currency === 'USD' ? '$' : 'Bs.';
                 const colorScheme = colorsList[index % colorsList.length];
+                const tagSavings = acc.type === 'savings' ? ' <small style="opacity:0.75; font-weight:600;">(Ahorro)</small>' : '';
                 
                 manageAccsList.innerHTML += `
                     <div class="manage-item">
                         <div class="manage-item-info">
                             <span class="account-color-dot" style="background-color: ${colorScheme.bg}; border: 1px solid ${colorScheme.text};"></span>
-                            <span>${acc.name} (${symbol} ${acc.balance.toFixed(2)})</span>
+                            <span>${acc.name} (${symbol} ${acc.balance.toFixed(2)})${tagSavings}</span>
                         </div>
                         <div class="tx-actions">
                             <button class="btn-tx-action" onclick="editAccount('${acc.id}')"><i class="fa-solid fa-pen"></i></button>
@@ -865,7 +933,7 @@
             (window.state.transactions || []).forEach(tx => {
                 if (tx.type === 'expense') {
                     expData[tx.category] = (expData[tx.category] || 0) + tx.amountUSD;
-                } else {
+                } else if (tx.type === 'income') {
                     incData[tx.category] = (incData[tx.category] || 0) + tx.amountUSD;
                 }
             });
@@ -913,13 +981,13 @@
                 const accountObj = (window.state.accounts || []).find(a => a.id === tx.accountId);
                 return {
                     Fecha: tx.date,
-                    Tipo: tx.type === 'expense' ? 'Gasto' : 'Ingreso',
+                    Tipo: tx.type === 'expense' ? 'Gasto' : (tx.type === 'income' ? 'Ingreso' : 'Transferencia'),
                     Categoría: tx.category,
                     Cuenta: accountObj ? accountObj.name : 'General',
                     'Monto USD ($)': tx.amountUSD,
                     'Monto Original': tx.originalAmount,
                     Moneda: tx.currency,
-                    'Tasa BCV Aplicada': tx.appliedRate,
+                    'Tasa BCV/Aplicada': tx.appliedRate,
                     Nota: tx.note || ''
                 };
             });
@@ -930,6 +998,165 @@
             XLSX.writeFile(workbook, `Finanzas_Luisana_${TODAY}.xlsx`);
         };
 
+        /* LÓGICA DE TRANSFERENCIAS ENTRE CUENTAS CON TASA EDITABLE */
+        window.openTransferModal = async function() {
+            const accounts = window.state.accounts || [];
+            if (accounts.length < 2) {
+                alert('Necesitas al menos 2 cuentas registradas para realizar transferencias.');
+                return;
+            }
+
+            const fromSelect = document.getElementById('trFromAccount');
+            const toSelect = document.getElementById('trToAccount');
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+
+            accounts.forEach((acc, i) => {
+                const symbol = acc.currency === 'USD' ? '$' : 'Bs.';
+                fromSelect.innerHTML += `<option value="${acc.id}">${acc.name} (${symbol} ${acc.balance.toFixed(2)})</option>`;
+                toSelect.innerHTML += `<option value="${acc.id}">${acc.name} (${symbol} ${acc.balance.toFixed(2)})</option>`;
+            });
+
+            toSelect.selectedIndex = 1;
+
+            document.getElementById('trDate').value = TODAY;
+            document.getElementById('trAmount').value = '';
+            document.getElementById('trNote').value = '';
+
+            await onTransferAccountsChanged();
+            document.getElementById('transferModal').classList.add('active');
+        };
+
+        window.onTransferAccountsChanged = async function() {
+            const fromId = document.getElementById('trFromAccount').value;
+            const toId = document.getElementById('trToAccount').value;
+            
+            const fromAcc = (window.state.accounts || []).find(a => a.id === fromId);
+            const toAcc = (window.state.accounts || []).find(a => a.id === toId);
+
+            if (!fromAcc || !toAcc) return;
+
+            const fromSymbol = fromAcc.currency === 'USD' ? '$' : 'Bs.';
+            document.getElementById('trAmountLabel').innerText = `Monto a debitar (${fromAcc.name} - ${fromSymbol})`;
+
+            const rateGroup = document.getElementById('trRateGroup');
+            
+            if (fromAcc.currency !== toAcc.currency) {
+                rateGroup.style.display = 'flex';
+                const dateStr = document.getElementById('trDate').value || TODAY;
+                const bcvRate = await fetchBcvRateForDate(dateStr);
+                
+                if (!document.getElementById('trCustomRate').value) {
+                    document.getElementById('trCustomRate').value = bcvRate;
+                }
+            } else {
+                rateGroup.style.display = 'none';
+            }
+
+            updateTransferPreview();
+        };
+
+        window.resetTransferRateToBCV = async function() {
+            const dateStr = document.getElementById('trDate').value || TODAY;
+            const bcvRate = await fetchBcvRateForDate(dateStr);
+            document.getElementById('trCustomRate').value = bcvRate;
+            updateTransferPreview();
+        };
+
+        window.updateTransferPreview = function() {
+            const fromId = document.getElementById('trFromAccount').value;
+            const toId = document.getElementById('trToAccount').value;
+            const amount = parseFloat(document.getElementById('trAmount').value) || 0;
+
+            const fromAcc = (window.state.accounts || []).find(a => a.id === fromId);
+            const toAcc = (window.state.accounts || []).find(a => a.id === toId);
+
+            if (!fromAcc || !toAcc) return;
+
+            let receivedAmount = amount;
+            const toSymbol = toAcc.currency === 'USD' ? '$' : 'Bs.';
+
+            if (fromAcc.currency !== toAcc.currency) {
+                const customRate = parseFloat(document.getElementById('trCustomRate').value) || 1;
+                if (fromAcc.currency === 'USD' && toAcc.currency === 'VES') {
+                    receivedAmount = amount * customRate;
+                } else if (fromAcc.currency === 'VES' && toAcc.currency === 'USD') {
+                    receivedAmount = amount / customRate;
+                }
+            }
+
+            document.getElementById('trPreviewValue').innerText = `${toSymbol} ${receivedAmount.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+        };
+
+        window.executeTransfer = async function() {
+            const fromId = document.getElementById('trFromAccount').value;
+            const toId = document.getElementById('trToAccount').value;
+            const amount = parseFloat(document.getElementById('trAmount').value);
+            const dateStr = document.getElementById('trDate').value || TODAY;
+            const userNote = document.getElementById('trNote').value.trim();
+
+            if (fromId === toId) {
+                alert('La cuenta origen y la cuenta destino deben ser diferentes.');
+                return;
+            }
+
+            if (!amount || amount <= 0) {
+                alert('Ingresa un monto válido para transferir.');
+                return;
+            }
+
+            const fromAcc = (window.state.accounts || []).find(a => a.id === fromId);
+            const toAcc = (window.state.accounts || []).find(a => a.id === toId);
+
+            if (!fromAcc || !toAcc) return;
+
+            let customRate = 1;
+            let receivedAmount = amount;
+
+            if (fromAcc.currency !== toAcc.currency) {
+                customRate = parseFloat(document.getElementById('trCustomRate').value);
+                if (!customRate || customRate <= 0) {
+                    alert('Por favor especifica una tasa de cambio válida.');
+                    return;
+                }
+                
+                if (fromAcc.currency === 'USD' && toAcc.currency === 'VES') {
+                    receivedAmount = amount * customRate;
+                } else {
+                    receivedAmount = amount / customRate;
+                }
+            }
+
+            // Aplicar cambios en saldos
+            fromAcc.balance -= amount;
+            toAcc.balance += receivedAmount;
+
+            let amountUSD = amount;
+            if (fromAcc.currency === 'VES') {
+                amountUSD = amount / customRate;
+            }
+
+            const transferTx = {
+                id: 'tr_' + Date.now(),
+                accountId: fromAcc.id,
+                type: 'transfer',
+                category: 'Transferencia Cuentas',
+                amountUSD: amountUSD,
+                originalAmount: amount,
+                currency: fromAcc.currency,
+                appliedRate: customRate,
+                note: `Hacia ${toAcc.name}${userNote ? ' (' + userNote + ')' : ''}`,
+                date: dateStr
+            };
+
+            if (!window.state.transactions) window.state.transactions = [];
+            window.state.transactions.unshift(transferTx);
+
+            saveStateToStorage();
+            closeModal('transferModal');
+        };
+
+        /* FUNCIONES DE GESTIÓN GENERAL */
         function populateCategoryDropdown(type) {
             const catSelect = document.getElementById('txCategory');
             catSelect.innerHTML = '';
@@ -1010,6 +1237,7 @@
             document.getElementById('btnSaveAcc').innerText = 'Crear Cuenta';
             document.getElementById('accName').value = '';
             document.getElementById('accBalance').value = '';
+            document.getElementById('accType').value = 'debit';
             document.getElementById('accountModal').classList.add('active');
         };
 
@@ -1081,7 +1309,8 @@
             const accSelect = document.getElementById('txAccountSelect');
             accSelect.innerHTML = '';
             (window.state.accounts || []).forEach(acc => {
-                accSelect.innerHTML += `<option value="${acc.id}">${acc.name} (${acc.currency})</option>`;
+                const typeTag = acc.type === 'savings' ? ' (Ahorro)' : '';
+                accSelect.innerHTML += `<option value="${acc.id}">${acc.name}${typeTag} (${acc.currency})</option>`;
             });
 
             populateCategoryDropdown(type);
@@ -1092,7 +1321,7 @@
 
         window.editTransaction = function(id) {
             const tx = (window.state.transactions || []).find(t => t.id === id);
-            if (!tx) return;
+            if (!tx || tx.type === 'transfer') return;
 
             currentTxType = tx.type;
             document.getElementById('editingTxId').value = tx.id;
@@ -1102,7 +1331,8 @@
             const accSelect = document.getElementById('txAccountSelect');
             accSelect.innerHTML = '';
             (window.state.accounts || []).forEach(acc => {
-                accSelect.innerHTML += `<option value="${acc.id}">${acc.name} (${acc.currency})</option>`;
+                const typeTag = acc.type === 'savings' ? ' (Ahorro)' : '';
+                accSelect.innerHTML += `<option value="${acc.id}">${acc.name}${typeTag} (${acc.currency})</option>`;
             });
             accSelect.value = tx.accountId;
 
@@ -1133,7 +1363,7 @@
 
             if (tx.type === 'expense') {
                 account.balance -= (account.type === 'credit' ? amountInAccCurrency : -amountInAccCurrency);
-            } else {
+            } else if (tx.type === 'income') {
                 account.balance -= (account.type === 'credit' ? -amountInAccCurrency : amountInAccCurrency);
             }
         }
@@ -1143,7 +1373,10 @@
 
             const txIndex = (window.state.transactions || []).findIndex(t => t.id === id);
             if (txIndex !== -1) {
-                revertAccountBalance(window.state.transactions[txIndex]);
+                const tx = window.state.transactions[txIndex];
+                if (tx.type !== 'transfer') {
+                    revertAccountBalance(tx);
+                }
                 window.state.transactions.splice(txIndex, 1);
                 saveStateToStorage();
             }
