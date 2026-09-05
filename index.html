@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Finanzas Personales | Multi-Cuentas & Perfil</title>
-    <meta name="theme-color" content="#f8fafc">
+    <meta name="theme-color" content="#E2D5F8">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,49 +17,79 @@
 
     <style>
         :root[data-theme="light"] {
-            --bg-primary: #f4f6fa;
-            --bg-card: #ffffff;
-            --bg-input: #edf2f7;
-            --accent-primary: #9985FB;
-            --accent-green: #4BA95F;
-            --accent-blue: #77DDFA;
-            --accent-orange: #FEA339;
-            --accent-pink: #FF908D;
-            --text-main: #0C0C0C;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --nav-bg: rgba(255, 255, 255, 0.9);
+            /* Paleta Plana (Sin Degradados) y Descansada */
+            --bg-primary: #EAE2F8;        /* Fondo principal lila suave */
+            --bg-card: #F4EEFC;           /* Tarjetas base lavanda pastel */
+            --bg-card-alt: #E3D7FA;       /* Tarjetas de contraste */
+            --bg-input: #DDD0F7;          /* Inputs y campos */
+            
+            --accent-primary: #9C74E6;    /* Lila sólido para elementos clave */
+            --accent-purple: #CDB4DB;     /* Lila pastel plano */
+            --accent-pink-light: #FFC8DD; /* Rosa claro pastel plano */
+            --accent-pink: #FF8FAB;       /* Rosa pastel */
+            --accent-blue-light: #BDE0FE; /* Azul claro pastel plano */
+            --accent-blue: #8ECAE6;       /* Azul pastel */
+            --accent-green: #52B788;      /* Verde suave */
+            --accent-yellow: #FDFFB6;     /* Amarillo pastel plano */
+
+            /* Colores específicos para los bloques de estadísticas */
+            --stat-available-bg: #D8F3DC; /* Verde Pastel Plano */
+            --stat-available-text: #1B4332;
+            --stat-monthly-bg: #FFC6FF;   /* Rosa/Magenta Pastel Plano */
+            --stat-monthly-text: #5C005C;
+            --stat-weekly-bg: #BEE1E6;    /* Azul/Celeste Pastel Plano */
+            --stat-weekly-text: #1D3557;
+
+            --text-main: #2B2238;         /* Texto morado oscuro */
+            --text-muted: #6B5B82;        /* Texto secundario */
+            --border-color: #D3C1F0;
+            --nav-bg: rgba(234, 226, 248, 0.98);
             --radius-lg: 22px;
             --radius-md: 16px;
             --radius-sm: 10px;
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 4px 12px rgba(100, 80, 140, 0.08);
         }
 
         :root[data-theme="dark"] {
-            --bg-primary: #0C0C0C;
-            --bg-card: #18181b;
-            --bg-input: #27272a;
-            --accent-primary: #9985FB;
-            --accent-green: #4BA95F;
-            --accent-blue: #77DDFA;
-            --accent-orange: #FEA339;
-            --accent-pink: #FF908D;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --border-color: #27272a;
-            --nav-bg: rgba(24, 24, 27, 0.9);
+            /* MODO OSCURO OPTIMIZADO PARA DESCANSAR LA VISTA (Tonos mate, bajo contraste agresivo) */
+            --bg-primary: #15131C;        /* Fondo gris/lavanda extremadamente oscuro mate */
+            --bg-card: #1F1B29;           /* Tarjetas oscuras mates */
+            --bg-card-alt: #2B2538;       /* Elementos secundarios */
+            --bg-input: #292336;          /* Campos de texto */
+            
+            --accent-primary: #A282E2;
+            --accent-purple: #3A3048;
+            --accent-pink-light: #3D2D38;
+            --accent-pink: #E57399;
+            --accent-blue-light: #2A3645;
+            --accent-blue: #4A6B82;
+            --accent-green: #48956B;
+            --accent-yellow: #3D3B2A;
+
+            /* Colores oscuros suavizados para bloques de estadísticas */
+            --stat-available-bg: #1B3328;
+            --stat-available-text: #B7E4C7;
+            --stat-monthly-bg: #3D223B;
+            --stat-monthly-text: #F3C4F3;
+            --stat-weekly-bg: #1E313B;
+            --stat-weekly-text: #9BF6FF;
+
+            --text-main: #E6E1EE;         /* Blanco roto suave para no encandilar */
+            --text-muted: #9E92B3;        /* Texto secundario atenudado */
+            --border-color: #312A40;
+            --nav-bg: rgba(21, 19, 28, 0.98);
             --radius-lg: 22px;
             --radius-md: 16px;
             --radius-sm: 10px;
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding-bottom: 90px; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding-bottom: 90px; transition: background-color 0.2s, color 0.2s; }
 
         .app-layout { width: 100%; max-width: 480px; padding: 20px 16px; display: flex; flex-direction: column; gap: 18px; }
 
-        /* NAVEGACIÓN LATERAL (SÓLO WEB) */
+        /* NAVEGACIÓN LATERAL (ESCRITORIO) */
         .desktop-sidebar { display: none; }
 
         .app-container { width: 100%; display: flex; flex-direction: column; gap: 18px; }
@@ -69,39 +99,43 @@
 
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
         .user-profile { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-primary), var(--accent-blue)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: #fff; cursor: pointer; transition: transform 0.2s; }
+        .avatar { width: 42px; height: 42px; border-radius: 50%; background-color: var(--accent-primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: #fff; cursor: pointer; transition: transform 0.2s; box-shadow: var(--card-shadow); }
         .avatar:hover { transform: scale(1.05); }
 
         .header-actions { display: flex; align-items: center; gap: 8px; }
-        .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border-color); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-orange); cursor: pointer; font-size: 1rem; box-shadow: var(--card-shadow); transition: background 0.3s; }
+        .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border-color); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-main); cursor: pointer; font-size: 1rem; box-shadow: var(--card-shadow); transition: background 0.2s; }
 
-        .bcv-pill { background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; box-shadow: var(--card-shadow); color: var(--text-main); }
-        .bcv-pill i { color: var(--accent-orange); }
+        .bcv-pill { background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer; box-shadow: var(--card-shadow); color: var(--text-main); }
 
-        .card-balance { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px; position: relative; box-shadow: var(--card-shadow); }
-        .balance-label { font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        /* BANNER PRINCIPAL / BALANCE (Color plano en lugar de degradado) */
+        .card-balance { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px; position: relative; box-shadow: var(--card-shadow); }
+        .balance-label { font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
         .balance-amount { font-size: 2.3rem; font-weight: 800; margin: 6px 0 2px 0; color: var(--text-main); }
-        .balance-bs { font-size: 0.95rem; color: var(--accent-orange); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .balance-bs { font-size: 0.95rem; color: var(--text-main); font-weight: 800; display: flex; align-items: center; gap: 6px; }
 
         .accounts-header { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
         .accounts-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .accounts-grid::-webkit-scrollbar { display: none; }
-        .account-card { background: var(--bg-card); border: 1px solid var(--border-color); min-width: 145px; padding: 16px; border-radius: var(--radius-md); flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--card-shadow); }
-        .account-name { font-size: 0.82rem; color: var(--text-muted); font-weight: 700; }
-        .account-val { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
-        .account-type-tag { font-size: 0.72rem; color: #0C0C0C; background: var(--accent-blue); font-weight: 700; padding: 3px 8px; border-radius: 6px; align-self: flex-start; }
 
+        /* TARJETAS DE CUENTAS CON COLORES DISTINTIVOS */
+        .account-card { border: 1px solid var(--border-color); min-width: 150px; padding: 16px; border-radius: var(--radius-md); flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--card-shadow); transition: transform 0.15s; }
+        .account-card:hover { transform: translateY(-2px); }
+        .account-name { font-size: 0.82rem; opacity: 0.85; font-weight: 800; }
+        .account-val { font-size: 1.15rem; font-weight: 800; }
+        .account-type-tag { font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; align-self: flex-start; background: rgba(0,0,0,0.06); }
+
+        /* BOTONES DE ACCIÓN */
         .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .btn-action { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 14px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: var(--card-shadow); transition: transform 0.1s; }
+        .btn-action { border: 1px solid var(--border-color); color: var(--text-main); padding: 14px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: var(--card-shadow); transition: transform 0.1s; }
         .btn-action:active { transform: scale(0.98); }
-        .btn-action.income i { color: var(--accent-green); }
-        .btn-action.expense i { color: var(--accent-pink); }
+        .btn-action.income { background-color: var(--accent-blue-light); }
+        .btn-action.expense { background-color: var(--accent-pink-light); }
 
         .section-title { font-size: 1.05rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; margin-top: 4px; color: var(--text-main); }
         .tx-list { display: flex; flex-direction: column; gap: 10px; }
         .tx-item { background: var(--bg-card); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--card-shadow); }
         .tx-left { display: flex; align-items: center; gap: 14px; }
-        .tx-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--bg-input); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .tx-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--bg-card-alt); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
         .tx-details { display: flex; flex-direction: column; gap: 2px; }
         .tx-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
         .tx-sub { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
@@ -116,24 +150,31 @@
         .btn-tx-action.delete:hover { color: var(--accent-pink); }
 
         /* Estilos del Perfil */
-        .profile-card-header { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: var(--card-shadow); }
-        .avatar-large { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-primary), var(--accent-blue)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.6rem; color: #fff; }
+        .profile-card-header { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: var(--card-shadow); }
+        .avatar-large { width: 58px; height: 58px; border-radius: 50%; background-color: var(--accent-primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.6rem; color: #fff; box-shadow: var(--card-shadow); }
         
+        /* ESTADÍSTICAS CON COLORES DIFERENCIADOS */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-md); box-shadow: var(--card-shadow); }
+        .stat-card { border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-md); box-shadow: var(--card-shadow); }
         .stat-card.full { grid-column: span 2; }
-        .stat-title { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .stat-value { font-size: 1.4rem; font-weight: 800; }
 
-        .btn-excel { background: var(--accent-green); color: #ffffff; border: none; padding: 16px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; width: 100%; box-shadow: var(--card-shadow); transition: opacity 0.2s; }
+        .stat-card.available { background-color: var(--stat-available-bg); color: var(--stat-available-text); }
+        .stat-card.monthly { background-color: var(--stat-monthly-bg); color: var(--stat-monthly-text); }
+        .stat-card.weekly { background-color: var(--stat-weekly-bg); color: var(--stat-weekly-text); }
+
+        .stat-title { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; opacity: 0.9; }
+        .stat-value { font-size: 1.5rem; font-weight: 800; }
+
+        .btn-excel { background-color: var(--accent-blue-light); color: var(--text-main); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; width: 100%; box-shadow: var(--card-shadow); transition: opacity 0.2s; }
         .btn-excel:hover { opacity: 0.9; }
 
         /* Módulos de Gestión de Cuentas y Categorías */
         .management-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--card-shadow); }
         .management-grid { display: flex; flex-direction: column; gap: 18px; }
         .management-list { display: flex; flex-direction: column; gap: 10px; }
-        .manage-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--bg-input); border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 700; }
+        .manage-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--bg-card-alt); border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 700; }
         .manage-item-info { display: flex; align-items: center; gap: 10px; }
+        .account-color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
 
         .charts-wrapper { display: flex; flex-direction: column; gap: 18px; }
         .chart-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--card-shadow); }
@@ -147,9 +188,9 @@
         .nav-item.active { color: var(--accent-primary); }
 
         /* Modales */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(12, 12, 12, 0.6); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: flex-end; z-index: 100; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 14, 24, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: flex-end; z-index: 100; }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: var(--bg-card); border: 1px solid var(--border-color); border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg); width: 100%; max-width: 480px; padding: 24px; display: flex; flex-direction: column; gap: 16px; animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto; color: var(--text-main); }
+        .modal-content { background: var(--bg-card); border: 1px solid var(--border-color); border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg); width: 100%; max-width: 480px; padding: 24px; display: flex; flex-direction: column; gap: 16px; animation: slideUp 0.25s ease; max-height: 90vh; overflow-y: auto; color: var(--text-main); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         .modal-header { display: flex; justify-content: space-between; align-items: center; }
@@ -163,10 +204,10 @@
         .currency-btn.active { background: var(--accent-primary); color: #fff; }
 
         .form-input { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; color: var(--text-main); font-size: 1rem; outline: none; font-weight: 600; }
-        .btn-submit { background: var(--accent-primary); color: #fff; border: none; padding: 16px; border-radius: var(--radius-md); font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 6px; }
+        .btn-submit { background: var(--accent-primary); color: #fff; border: none; padding: 16px; border-radius: var(--radius-md); font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 6px; box-shadow: var(--card-shadow); }
 
-        .conversion-preview { font-size: 0.85rem; font-weight: 800; color: var(--accent-green); background: rgba(75, 169, 95, 0.12); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(75, 169, 95, 0.3); display: flex; justify-content: space-between; align-items: center; }
-        .rate-info-tag { font-size: 0.78rem; color: var(--accent-orange); font-weight: 700; }
+        .conversion-preview { font-size: 0.85rem; font-weight: 800; color: var(--text-main); background: var(--bg-card-alt); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .rate-info-tag { font-size: 0.78rem; color: var(--text-muted); font-weight: 700; }
 
         /* =========================================================
            ADAPTACIÓN RESPONSIVA PARA VERSIÓN WEB / ESCRITORIO
@@ -175,30 +216,26 @@
             body { padding-bottom: 0; align-items: center; min-height: 100vh; }
             .app-layout { max-width: 1100px; display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 40px 24px; }
 
-            /* Ocultar barra inferior y mostrar sidebar lateral */
             .bottom-nav { display: none; }
             .desktop-sidebar { display: flex; flex-direction: column; gap: 24px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--card-shadow); height: fit-content; position: sticky; top: 40px; }
             
             .sidebar-logo { font-size: 1.15rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
             .sidebar-menu { display: flex; flex-direction: column; gap: 8px; }
             .sidebar-btn { background: none; border: none; padding: 14px 16px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; color: var(--text-muted); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; width: 100%; text-align: left; }
-            .sidebar-btn:hover { background: var(--bg-input); color: var(--text-main); }
+            .sidebar-btn:hover { background: var(--bg-card-alt); color: var(--text-main); }
             .sidebar-btn.active { background: var(--accent-primary); color: #ffffff; }
 
             .app-header { padding: 0 0 10px 0; }
 
-            /* Ajustes en la vista Inicio en Web */
             .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
             .account-card { min-width: auto; }
 
-            /* Ajustes en la vista Perfil en Web */
             .stats-grid { grid-template-columns: repeat(3, 1fr); }
             .stat-card.full { grid-column: span 1; }
 
             .management-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
             .charts-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-            /* Centrar modales en pantalla de escritorio */
             .modal-overlay { align-items: center; }
             .modal-content { border-radius: var(--radius-lg); animation: fadeIn 0.2s ease; }
             @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
@@ -208,7 +245,7 @@
 <body>
 
     <div class="app-layout">
-        <!-- Sidebar para Versión Web / Pantallas Grandes -->
+        <!-- Sidebar para Versión Web / Escritorio -->
         <aside class="desktop-sidebar">
             <div class="sidebar-logo">
                 <i class="fa-solid fa-wallet" style="color: var(--accent-primary);"></i>
@@ -226,9 +263,9 @@
             </div>
         </aside>
 
-        <!-- Contenedor Principal de la App -->
+        <!-- Contenedor Principal -->
         <div class="app-container">
-            <!-- Encabezado Principal -->
+            <!-- Encabezado -->
             <div class="app-header">
                 <div class="user-profile">
                     <div class="avatar" onclick="switchTab('profile')">L</div>
@@ -293,18 +330,19 @@
                     </div>
                 </div>
 
+                <!-- BLOQUES CON COLORES DISTINTOS Y PLÁCIDOS -->
                 <div class="stats-grid">
-                    <div class="stat-card full">
+                    <div class="stat-card full available">
                         <div class="stat-title">TE QUEDA DISPONIBLE</div>
-                        <div class="stat-value" id="profileRemaining" style="color: var(--accent-green);">$0.00</div>
+                        <div class="stat-value" id="profileRemaining">$0.00</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card monthly">
                         <div class="stat-title">GASTOS DEL MES</div>
-                        <div class="stat-value" id="profileMonthlyExp" style="color: var(--accent-pink);">$0.00</div>
+                        <div class="stat-value" id="profileMonthlyExp">$0.00</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card weekly">
                         <div class="stat-title">GASTOS DE LA SEMANA</div>
-                        <div class="stat-value" id="profileWeeklyExp" style="color: var(--accent-orange);">$0.00</div>
+                        <div class="stat-value" id="profileWeeklyExp">$0.00</div>
                     </div>
                 </div>
 
@@ -510,6 +548,25 @@
 
         const TODAY = new Date().toISOString().split('T')[0];
 
+        // Paleta de colores distintivos planos para las cuentas (Modos Claro y Oscuro)
+        const accountColorsLight = [
+            { bg: '#CDB4DB', text: '#2B2238' }, // Lila
+            { bg: '#BDE0FE', text: '#1D3557' }, // Celeste
+            { bg: '#FFC8DD', text: '#5C003D' }, // Rosa
+            { bg: '#E2ECE9', text: '#1B4332' }, // Menta
+            { bg: '#FFE5EC', text: '#4A001F' }, // Melocotón
+            { bg: '#D8BBFF', text: '#2A004E' }  /* Violeta */
+        ];
+
+        const accountColorsDark = [
+            { bg: '#382D42', text: '#E2D5F8' },
+            { bg: '#253545', text: '#BDE0FE' },
+            { bg: '#422835', text: '#FFC8DD' },
+            { bg: '#233830', text: '#C1E1C1' },
+            { bg: '#40292E', text: '#FFB5A7' },
+            { bg: '#332647', text: '#D8BBFF' }
+        ];
+
         const defaultCategories = [
             { id: 'cat_1', name: 'Supermercado', icon: '🛒', type: 'expense' },
             { id: 'cat_2', name: 'Comida / Salidas', icon: '🍔', type: 'expense' },
@@ -537,7 +594,6 @@
         let expensesChart = null;
         let incomeChart = null;
 
-        // Sincronización continua con Firebase Firestore
         onSnapshot(stateDocRef, (docSnap) => {
             if (docSnap.exists()) {
                 window.state = docSnap.data();
@@ -570,6 +626,7 @@
             } else {
                 icon.className = 'fa-solid fa-moon';
             }
+            render();
             if (expensesChart) renderCharts();
         };
 
@@ -659,13 +716,18 @@
 
             const accContainer = document.getElementById('accountsContainer');
             accContainer.innerHTML = '';
-            (window.state.accounts || []).forEach(acc => {
+            
+            const isDark = (window.state.theme === 'dark');
+            const colorsList = isDark ? accountColorsDark : accountColorsLight;
+
+            (window.state.accounts || []).forEach((acc, index) => {
                 const isUSD = acc.currency === 'USD';
                 const symbol = isUSD ? '$' : 'Bs.';
                 const typeText = acc.type === 'credit' ? 'Crédito' : 'Débito/Efectivo';
+                const colorScheme = colorsList[index % colorsList.length];
                 
                 accContainer.innerHTML += `
-                    <div class="account-card">
+                    <div class="account-card" style="background-color: ${colorScheme.bg}; color: ${colorScheme.text};">
                         <span class="account-name">${acc.name}</span>
                         <span class="account-val">${symbol} ${acc.balance.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
                         <span class="account-type-tag">${typeText}</span>
@@ -753,14 +815,19 @@
             document.getElementById('profileMonthlyExp').innerText = `$${monthlyExp.toFixed(2)}`;
             document.getElementById('profileWeeklyExp').innerText = `$${weeklyExp.toFixed(2)}`;
 
+            const isDark = (window.state.theme === 'dark');
+            const colorsList = isDark ? accountColorsDark : accountColorsLight;
+
             const manageAccsList = document.getElementById('manageAccountsList');
             manageAccsList.innerHTML = '';
-            (window.state.accounts || []).forEach(acc => {
+            (window.state.accounts || []).forEach((acc, index) => {
                 const symbol = acc.currency === 'USD' ? '$' : 'Bs.';
+                const colorScheme = colorsList[index % colorsList.length];
+                
                 manageAccsList.innerHTML += `
                     <div class="manage-item">
                         <div class="manage-item-info">
-                            <i class="fa-solid fa-wallet" style="color: var(--accent-primary);"></i>
+                            <span class="account-color-dot" style="background-color: ${colorScheme.bg}; border: 1px solid ${colorScheme.text};"></span>
                             <span>${acc.name} (${symbol} ${acc.balance.toFixed(2)})</span>
                         </div>
                         <div class="tx-actions">
@@ -803,9 +870,9 @@
                 }
             });
 
-            const paletteColors = ['#FF908D', '#FEA339', '#77DDFA', '#9985FB', '#4BA95F', '#334155'];
+            const paletteColors = ['#FFC8DD', '#FFAFCC', '#BDE0FE', '#CDB4DB', '#A2D2FF', '#E2D5F8'];
             const isDark = (window.state.theme === 'dark');
-            const legendTextColor = isDark ? '#f4f4f5' : '#0C0C0C';
+            const legendTextColor = isDark ? '#E6E1EE' : '#2B2238';
 
             const ctxExp = document.getElementById('expensesChart').getContext('2d');
             if (expensesChart) expensesChart.destroy();
@@ -829,7 +896,7 @@
                     labels: Object.keys(incData).length ? Object.keys(incData) : ['Sin Datos'],
                     datasets: [{
                         data: Object.values(incData).length ? Object.values(incData) : [1],
-                        backgroundColor: ['#4BA95F', '#77DDFA', '#9985FB', '#FEA339']
+                        backgroundColor: ['#BDE0FE', '#A2D2FF', '#CDB4DB', '#FFC8DD']
                     }]
                 },
                 options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: legendTextColor, font: { family: 'Plus Jakarta Sans', weight: 'bold' } } } } }
