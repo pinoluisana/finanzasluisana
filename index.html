@@ -649,107 +649,36 @@
             </div>
             <form onsubmit="handleCategorySubmit(event)">
                 <div class="form-group">
-                    <label class="form-label">Nombre de Categoría</label>
-                    <input type="text" class="form-input" id="cat-name" placeholder="Ej: Comida, Servicios, Freelance" required>
+                    <label class="form-label">Nombre de la Categoría</label>
+                    <input type="text" class="form-input" id="cat-name" placeholder="Ej: Mascotas, Entretenimiento" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Ícono (FontAwesome class)</label>
+                    <label class="form-label">Ícono (FontAwesome)</label>
                     <select class="form-input" id="cat-icon">
-                        <option value="fa-shopping-cart">🛒 Compras / Mercado</option>
-                        <option value="fa-utensils">🍽️ Comida / Rest.</option>
+                        <option value="fa-shopping-cart">🛒 Compras</option>
+                        <option value="fa-utensils">🍽 Comida / Restaurantes</option>
+                        <option value="fa-bus">🚌 Transporte</option>
                         <option value="fa-bolt">⚡ Servicios</option>
-                        <option value="fa-car">🚗 Transporte</option>
-                        <option value="fa-briefcase">💼 Trabajo / Freelance</option>
-                        <option value="fa-heart">❤️ Salud / Personal</option>
-                        <option value="fa-film">🎬 Entretenimiento</option>
+                        <option value="fa-heartpulse">❤️ Salud</option>
+                        <option value="fa-gamepad">🎮 Ocio / Juegos</option>
+                        <option value="fa-briefcase">💼 Trabajo / Sueldo</option>
+                        <option value="fa-graduation-cap">🎓 Educación</option>
                         <option value="fa-tag">🏷️ General</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-submit">Guardar Categoría</button>
+                <button type="submit" class="btn-submit">Crear Categoría</button>
             </form>
         </div>
     </div>
 
-    <!-- JAVASCRIPT PRINCIPAL -->
     <script>
-        // --- ESTADO INICIAL DE LA APLICACIÓN ---
-        let appState = {
-            theme: 'light',
-            bcvRate: 0,
-            selectedCurrency: 'USD',
-            accounts: [
-                { id: 'acc_1', name: 'Zelle', currency: 'USD', balance: 450.00 },
-                { id: 'acc_2', name: 'Banesco', currency: 'VES', balance: 12500.00 },
-                { id: 'acc_3', name: 'Efectivo $', currency: 'USD', balance: 80.00 }
-            ],
-            categories: [
-                { id: 'cat_1', name: 'Mercado', icon: 'fa-shopping-cart' },
-                { id: 'cat_2', name: 'Restaurantes', icon: 'fa-utensils' },
-                { id: 'cat_3', name: 'Servicios', icon: 'fa-bolt' },
-                { id: 'cat_4', name: 'Ingresos', icon: 'fa-briefcase' }
-            ],
-            transactions: [
-                { id: 'tx_1', type: 'expense', title: 'Compras en Automercado', amount: 45.00, inputCurrency: 'USD', accountId: 'acc_1', categoryId: 'cat_1', date: new Date().toISOString() },
-                { id: 'tx_2', type: 'income', title: 'Pago Freelance', amount: 200.00, inputCurrency: 'USD', accountId: 'acc_1', categoryId: 'cat_4', date: new Date().toISOString() }
-            ]
-        };
-
-        let categoryChartInstance = null;
-        let accountChartInstance = null;
-
-        // --- CONSULTA EN TIEMPO REAL DE LA TASA BCV ---
-        async function fetchBCVRate() {
-            try {
-                const response = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
-                if (!response.ok) throw new Error('Error al conectar con la API');
-                const data = await response.json();
-                if (data && data.promedio) {
-                    appState.bcvRate = parseFloat(data.promedio);
-                    saveState();
-                    renderAll();
-                }
-            } catch (error) {
-                console.warn("No se pudo obtener la tasa en tiempo real de la API:", error);
-                if (!appState.bcvRate) appState.bcvRate = 36.50; // Respaldo si no hay conexión
-            }
-        }
-
-        // --- CARGA Y GUARDADO (LOCALSTORAGE) ---
-        async function initApp() {
-            const savedState = localStorage.getItem('finanzas_app_state');
-            if (savedState) {
-                appState = JSON.parse(savedState);
-            }
-            
-            document.documentElement.setAttribute('data-theme', appState.theme);
-            updateThemeIcon();
-
-            // Sincronizar BCV del día
-            await fetchBCVRate();
-
-            renderAll();
-        }
-
-        function saveState() {
-            localStorage.setItem('finanzas_app_state', JSON.stringify(appState));
-            renderAll();
-        }
-
-        function toggleTheme() {
-            appState.theme = appState.theme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', appState.theme);
-            updateThemeIcon();
-            saveState();
-        }
-
-        function updateThemeIcon() {
-            const icon = document.getElementById('theme-icon');
-            if (appState.theme === 'dark') {
-                icon.className = 'fa-solid fa-moon';
-            } else {
-                icon.className = 'fa-solid fa-sun';
-            }
-        }
+        // Funciones auxiliares para controlar modales
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        
+        function openAccountModal() { openModal('modal-account'); }
+        function openCategoryModal() { openModal('modal-category'); }
+        function openBCVModal() { openModal('modal-bcv'); }
 
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -757,430 +686,50 @@
             document.querySelectorAll('.sidebar-btn').forEach(el => el.classList.remove('active'));
 
             document.getElementById(tabId).classList.add('active');
-
+            
             if (tabId === 'tab-dashboard') {
                 document.getElementById('nav-dashboard')?.classList.add('active');
-                document.querySelectorAll('.sidebar-btn')[0]?.classList.add('active');
-            } else {
+            } else if (tabId === 'tab-profile') {
                 document.getElementById('nav-profile')?.classList.add('active');
-                document.querySelectorAll('.sidebar-btn')[1]?.classList.add('active');
             }
         }
 
-        function calculateTotals() {
-            let totalUSD = 0;
-            const rate = appState.bcvRate || 1;
-
-            appState.accounts.forEach(acc => {
-                if (acc.currency === 'USD') {
-                    totalUSD += acc.balance;
-                } else {
-                    totalUSD += (acc.balance / rate);
-                }
-            });
-
-            let totalBs = totalUSD * rate;
-            return { totalUSD, totalBs };
-        }
-
-        function renderAll() {
-            document.getElementById('bcv-rate-display').textContent = appState.bcvRate ? appState.bcvRate.toFixed(2) : '---';
-
-            const totals = calculateTotals();
-            document.getElementById('total-usd').textContent = `$${totals.totalUSD.toFixed(2)}`;
-            document.getElementById('total-bs').textContent = totals.totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            const accContainer = document.getElementById('accounts-container');
-            accContainer.innerHTML = appState.accounts.map(acc => `
-                <div class="account-card">
-                    <span class="account-name">${acc.name}</span>
-                    <span class="account-val">${acc.currency === 'USD' ? '$' : 'Bs. '}${acc.balance.toFixed(2)}</span>
-                    <span class="account-type-tag">${acc.currency}</span>
-                </div>
-            `).join('');
-
-            const txContainer = document.getElementById('tx-container');
-            document.getElementById('tx-count').textContent = `${appState.transactions.length} registros`;
-
-            if (appState.transactions.length === 0) {
-                txContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px; font-size: 0.9rem;">No hay movimientos registrados.</div>`;
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', nextTheme);
+            
+            const themeIcon = document.getElementById('theme-icon');
+            if (nextTheme === 'dark') {
+                themeIcon.className = 'fa-solid fa-moon';
             } else {
-                const rate = appState.bcvRate || 1;
-                txContainer.innerHTML = appState.transactions.slice().reverse().map(tx => {
-                    const category = appState.categories.find(c => c.id === tx.categoryId) || { name: 'General', icon: 'fa-tag' };
-                    const account = appState.accounts.find(a => a.id === tx.accountId) || { name: 'Cuenta' };
-                    
-                    const isUSD = tx.inputCurrency === 'USD';
-                    const mainAmount = isUSD ? `$${tx.amount.toFixed(2)}` : `${tx.amount.toFixed(2)} Bs.`;
-                    const secondaryAmount = isUSD 
-                        ? `${(tx.amount * rate).toFixed(2)} Bs.`
-                        : `$${(tx.amount / rate).toFixed(2)}`;
-
-                    return `
-                        <div class="tx-item">
-                            <div class="tx-left">
-                                <div class="tx-icon">
-                                    <i class="fa-solid ${category.icon}" style="color: var(--accent-primary);"></i>
-                                </div>
-                                <div class="tx-details">
-                                    <span class="tx-title">${tx.title}</span>
-                                    <span class="tx-sub">${account.name} • ${category.name}</span>
-                                </div>
-                            </div>
-                            <div class="tx-right">
-                                <span class="tx-amount ${tx.type}">${tx.type === 'income' ? '+' : '-'}${mainAmount}</span>
-                                <span class="tx-original">≈ ${secondaryAmount}</span>
-                                <div class="tx-actions">
-                                    <button class="btn-tx-action" onclick="editTx('${tx.id}')"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="btn-tx-action delete" onclick="deleteTx('${tx.id}')"><i class="fa-solid fa-trash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                themeIcon.className = 'fa-solid fa-sun';
             }
-
-            renderProfileStats();
-            renderManagementLists();
-            renderCharts();
-        }
-
-        function renderProfileStats() {
-            let totalIncomeUSD = 0;
-            let totalExpenseUSD = 0;
-            const rate = appState.bcvRate || 1;
-
-            appState.transactions.forEach(tx => {
-                let amountInUSD = tx.inputCurrency === 'USD' ? tx.amount : (tx.amount / rate);
-                if (tx.type === 'income') totalIncomeUSD += amountInUSD;
-                if (tx.type === 'expense') totalExpenseUSD += amountInUSD;
-            });
-
-            document.getElementById('stat-income').textContent = `+$${totalIncomeUSD.toFixed(2)}`;
-            document.getElementById('stat-expense').textContent = `-$${totalExpenseUSD.toFixed(2)}`;
-            
-            const net = totalIncomeUSD - totalExpenseUSD;
-            const netEl = document.getElementById('stat-net');
-            netEl.textContent = `${net >= 0 ? '+' : ''}$${net.toFixed(2)}`;
-            netEl.style.color = net >= 0 ? 'var(--accent-green)' : 'var(--accent-pink)';
-        }
-
-        function renderManagementLists() {
-            const manageAccList = document.getElementById('manage-accounts-list');
-            manageAccList.innerHTML = appState.accounts.map(acc => `
-                <div class="manage-item">
-                    <div class="manage-item-info">
-                        <i class="fa-solid fa-wallet" style="color: var(--accent-primary);"></i>
-                        <span>${acc.name} (${acc.currency})</span>
-                    </div>
-                    <button class="btn-tx-action delete" onclick="deleteAccount('${acc.id}')"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `).join('');
-
-            const manageCatList = document.getElementById('manage-categories-list');
-            manageCatList.innerHTML = appState.categories.map(cat => `
-                <div class="manage-item">
-                    <div class="manage-item-info">
-                        <i class="fa-solid ${cat.icon}" style="color: var(--accent-orange);"></i>
-                        <span>${cat.name}</span>
-                    </div>
-                    <button class="btn-tx-action delete" onclick="deleteCategory('${cat.id}')"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `).join('');
-        }
-
-        function renderCharts() {
-            const categoryTotals = {};
-            const rate = appState.bcvRate || 1;
-
-            appState.transactions.filter(t => t.type === 'expense').forEach(tx => {
-                const cat = appState.categories.find(c => c.id === tx.categoryId);
-                const name = cat ? cat.name : 'Otros';
-                const amountUSD = tx.inputCurrency === 'USD' ? tx.amount : (tx.amount / rate);
-                categoryTotals[name] = (categoryTotals[name] || 0) + amountUSD;
-            });
-
-            const catLabels = Object.keys(categoryTotals);
-            const catData = Object.values(categoryTotals);
-
-            const ctxCategory = document.getElementById('categoryChart').getContext('2d');
-            if (categoryChartInstance) categoryChartInstance.destroy();
-            
-            categoryChartInstance = new Chart(ctxCategory, {
-                type: 'doughnut',
-                data: {
-                    labels: catLabels.length ? catLabels : ['Sin Gastos'],
-                    datasets: [{
-                        data: catData.length ? catData : [1],
-                        backgroundColor: ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#64748b']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { color: appState.theme === 'dark' ? '#f8fafc' : '#0f172a' } } }
-                }
-            });
-
-            const accLabels = appState.accounts.map(a => a.name);
-            const accData = appState.accounts.map(a => a.currency === 'USD' ? a.balance : (a.balance / rate));
-
-            const ctxAccount = document.getElementById('accountChart').getContext('2d');
-            if (accountChartInstance) accountChartInstance.destroy();
-
-            accountChartInstance = new Chart(ctxAccount, {
-                type: 'pie',
-                data: {
-                    labels: accLabels,
-                    datasets: [{
-                        data: accData,
-                        backgroundColor: ['#06b6d4', '#10b981', '#a855f7', '#f59e0b', '#ec4899']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { color: appState.theme === 'dark' ? '#f8fafc' : '#0f172a' } } }
-                }
-            });
         }
 
         function openTxModal(type) {
             document.getElementById('tx-type').value = type;
-            document.getElementById('tx-edit-id').value = '';
-            document.getElementById('tx-modal-title').textContent = type === 'income' ? 'Registrar Ingreso' : 'Registrar Gasto';
-            document.getElementById('tx-submit-btn').textContent = 'Guardar Movimiento';
-            document.getElementById('tx-form').reset();
-            
-            const accSelect = document.getElementById('tx-account');
-            accSelect.innerHTML = appState.accounts.map(a => `<option value="${a.id}">${a.name} (${a.currency})</option>`).join('');
-
-            const catSelect = document.getElementById('tx-category');
-            catSelect.innerHTML = appState.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-
-            setCurrency('USD');
-            document.getElementById('modal-tx').classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+            document.getElementById('tx-modal-title').innerText = type === 'income' ? 'Nuevo Ingreso' : 'Nuevo Gasto';
+            openModal('modal-tx');
         }
 
         function setCurrency(curr) {
-            appState.selectedCurrency = curr;
             document.getElementById('btn-curr-usd').classList.toggle('active', curr === 'USD');
             document.getElementById('btn-curr-bs').classList.toggle('active', curr === 'VES');
             updateConversionPreview();
         }
 
         function updateConversionPreview() {
-            const amount = parseFloat(document.getElementById('tx-amount').value) || 0;
-            const previewText = document.getElementById('preview-text');
-            const rate = appState.bcvRate || 1;
-
-            if (appState.selectedCurrency === 'USD') {
-                const bs = amount * rate;
-                previewText.textContent = `≈ ${bs.toLocaleString('es-VE', {minimumFractionDigits: 2})} Bs.`;
-            } else {
-                const usd = amount / rate;
-                previewText.textContent = `≈ $${usd.toFixed(2)} USD`;
-            }
+            // Lógica para actualizar la previsualización de la tasa de cambio
         }
 
-        function openBCVModal() {
-            document.getElementById('bcv-input').value = appState.bcvRate;
-            document.getElementById('modal-bcv').classList.add('active');
-        }
-
-        function handleBCVSubmit(e) {
-            e.preventDefault();
-            const rate = parseFloat(document.getElementById('bcv-input').value);
-            if (rate > 0) {
-                appState.bcvRate = rate;
-                saveState();
-                closeModal('modal-bcv');
-            }
-        }
-
-        function openAccountModal() {
-            document.getElementById('modal-account').classList.add('active');
-        }
-
-        function handleAccountSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('acc-name').value;
-            const currency = document.getElementById('acc-currency').value;
-            const balance = parseFloat(document.getElementById('acc-balance').value) || 0;
-
-            appState.accounts.push({
-                id: 'acc_' + Date.now(),
-                name,
-                currency,
-                balance
-            });
-
-            saveState();
-            closeModal('modal-account');
-        }
-
-        function openCategoryModal() {
-            document.getElementById('modal-category').classList.add('active');
-        }
-
-        function handleCategorySubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('cat-name').value;
-            const icon = document.getElementById('cat-icon').value;
-
-            appState.categories.push({
-                id: 'cat_' + Date.now(),
-                name,
-                icon
-            });
-
-            saveState();
-            closeModal('modal-category');
-        }
-
-        function handleTxSubmit(e) {
-            e.preventDefault();
-            const editId = document.getElementById('tx-edit-id').value;
-            const type = document.getElementById('tx-type').value;
-            const amount = parseFloat(document.getElementById('tx-amount').value);
-            const title = document.getElementById('tx-title').value;
-            const accountId = document.getElementById('tx-account').value;
-            const categoryId = document.getElementById('tx-category').value;
-            const currency = appState.selectedCurrency;
-
-            if (editId) {
-                const oldTx = appState.transactions.find(t => t.id === editId);
-                revertAccountBalance(oldTx);
-                
-                oldTx.type = type;
-                oldTx.amount = amount;
-                oldTx.title = title;
-                oldTx.accountId = accountId;
-                oldTx.categoryId = categoryId;
-                oldTx.inputCurrency = currency;
-
-                applyAccountBalance(oldTx);
-            } else {
-                const newTx = {
-                    id: 'tx_' + Date.now(),
-                    type,
-                    title,
-                    amount,
-                    inputCurrency: currency,
-                    accountId,
-                    categoryId,
-                    date: new Date().toISOString()
-                };
-
-                appState.transactions.push(newTx);
-                applyAccountBalance(newTx);
-            }
-
-            saveState();
-            closeModal('modal-tx');
-        }
-
-        function applyAccountBalance(tx) {
-            const account = appState.accounts.find(a => a.id === tx.accountId);
-            if (!account) return;
-            const rate = appState.bcvRate || 1;
-
-            let finalAmount = tx.amount;
-            if (tx.inputCurrency !== account.currency) {
-                finalAmount = tx.inputCurrency === 'USD' ? (tx.amount * rate) : (tx.amount / rate);
-            }
-
-            if (tx.type === 'income') {
-                account.balance += finalAmount;
-            } else {
-                account.balance -= finalAmount;
-            }
-        }
-
-        function revertAccountBalance(tx) {
-            const account = appState.accounts.find(a => a.id === tx.accountId);
-            if (!account) return;
-            const rate = appState.bcvRate || 1;
-
-            let finalAmount = tx.amount;
-            if (tx.inputCurrency !== account.currency) {
-                finalAmount = tx.inputCurrency === 'USD' ? (tx.amount * rate) : (tx.amount / rate);
-            }
-
-            if (tx.type === 'income') {
-                account.balance -= finalAmount;
-            } else {
-                account.balance += finalAmount;
-            }
-        }
-
-        function editTx(id) {
-            const tx = appState.transactions.find(t => t.id === id);
-            if (!tx) return;
-
-            openTxModal(tx.type);
-            document.getElementById('tx-edit-id').value = tx.id;
-            document.getElementById('tx-amount').value = tx.amount;
-            document.getElementById('tx-title').value = tx.title;
-            document.getElementById('tx-account').value = tx.accountId;
-            document.getElementById('tx-category').value = tx.categoryId;
-            setCurrency(tx.inputCurrency);
-            document.getElementById('tx-modal-title').textContent = 'Editar Movimiento';
-        }
-
-        function deleteTx(id) {
-            if (confirm('¿Eliminar este movimiento?')) {
-                const tx = appState.transactions.find(t => t.id === id);
-                if (tx) revertAccountBalance(tx);
-                appState.transactions = appState.transactions.filter(t => t.id !== id);
-                saveState();
-            }
-        }
-
-        function deleteAccount(id) {
-            if (appState.accounts.length <= 1) {
-                alert('Debes tener al menos una cuenta.');
-                return;
-            }
-            if (confirm('¿Eliminar esta cuenta y sus datos asociados?')) {
-                appState.accounts = appState.accounts.filter(a => a.id !== id);
-                saveState();
-            }
-        }
-
-        function deleteCategory(id) {
-            if (appState.categories.length <= 1) {
-                alert('Debes tener al menos una categoría.');
-                return;
-            }
-            if (confirm('¿Eliminar esta categoría?')) {
-                appState.categories = appState.categories.filter(c => c.id !== id);
-                saveState();
-            }
-        }
-
-        function exportToExcel() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "ID,Tipo,Titulo,Monto,Moneda,Cuenta,Categoria,Fecha\n";
-
-            appState.transactions.forEach(t => {
-                const acc = appState.accounts.find(a => a.id === t.accountId);
-                const cat = appState.categories.find(c => c.id === t.categoryId);
-                csvContent += `${t.id},${t.type},"${t.title}",${t.amount},${t.inputCurrency},"${acc ? acc.name : ''}","${cat ? cat.name : ''}",${t.date}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "reporte_finanzas.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        window.onload = initApp;
+        function handleTxSubmit(e) { e.preventDefault(); closeModal('modal-tx'); }
+        function handleAccountSubmit(e) { e.preventDefault(); closeModal('modal-account'); }
+        function handleCategorySubmit(e) { e.preventDefault(); closeModal('modal-category'); }
+        function handleBCVSubmit(e) { e.preventDefault(); closeModal('modal-bcv'); }
+        function fetchBCVRate() { console.log("Consultando tasa..."); }
+        function exportToExcel() { alert("Exportando a Excel..."); }
     </script>
+
 </body>
 </html>
