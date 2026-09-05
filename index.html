@@ -17,14 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
-        /* Paleta basada en la imagen del usuario:
-           #0C0C0C (Texto Oscuro / Fondo Dark)
-           #4BA95F (Verde)
-           #77DDFA (Azul)
-           #FEA339 (Naranja)
-           #9985FB (Púrpura)
-           #FF908D (Coral/Rosa)
-        */
         :root[data-theme="light"] {
             --bg-primary: #f4f6fa;
             --bg-card: #ffffff;
@@ -137,6 +129,12 @@
         .chart-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--card-shadow); }
         .chart-box h4 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .chart-container { position: relative; width: 100%; max-width: 280px; margin: 0 auto; }
+
+        /* Listas editables en perfil */
+        .management-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--card-shadow); }
+        .management-list { display: flex; flex-direction: column; gap: 10px; }
+        .manage-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--bg-input); border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 700; }
+        .manage-item-info { display: flex; align-items: center; gap: 10px; }
 
         /* Barra de Navegación Inferior */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 68px; background: var(--nav-bg); backdrop-filter: blur(12px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 90; }
@@ -255,10 +253,23 @@
                 <i class="fa-solid fa-file-excel"></i> Exportar Mis Datos a Excel (.xlsx)
             </button>
 
-            <div class="section-title">
-                <span>Compilado de Cuentas</span>
+            <!-- GESTIÓN DE CUENTAS -->
+            <div class="management-box">
+                <div class="section-title" style="margin-top: 0;">
+                    <span>Mis Cuentas</span>
+                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddAccountModal()">+ Crear</span>
+                </div>
+                <div class="management-list" id="manageAccountsList"></div>
             </div>
-            <div class="accounts-grid" id="profileAccountsContainer"></div>
+
+            <!-- GESTIÓN DE CATEGORÍAS -->
+            <div class="management-box">
+                <div class="section-title" style="margin-top: 0;">
+                    <span>Mis Categorías</span>
+                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddCategoryModal()">+ Crear</span>
+                </div>
+                <div class="management-list" id="manageCategoriesList"></div>
+            </div>
 
             <div class="chart-box">
                 <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-pink);"></i> ¿En qué has gastado?</h4>
@@ -292,9 +303,10 @@
     <div class="modal-overlay" id="accountModal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">Agregar Cuenta / Tarjeta</div>
+                <div class="modal-title" id="accountModalTitle">Agregar Cuenta / Tarjeta</div>
                 <button class="close-btn" onclick="closeModal('accountModal')">&times;</button>
             </div>
+            <input type="hidden" id="editingAccId" value="">
             <div class="form-group">
                 <label class="form-label">Nombre de la Cuenta</label>
                 <input type="text" class="form-input" id="accName" placeholder="Ej: Banesco, Tarjeta BNC, Efectivo $">
@@ -314,19 +326,20 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Saldo Inicial</label>
+                <label class="form-label">Saldo</label>
                 <input type="number" step="0.01" class="form-input" id="accBalance" placeholder="0.00">
             </div>
-            <button class="btn-submit" onclick="saveNewAccount()">Crear Cuenta</button>
+            <button class="btn-submit" id="btnSaveAcc" onclick="saveNewAccount()">Guardar Cuenta</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="categoryModal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">Agregar Nueva Categoría</div>
+                <div class="modal-title" id="catModalTitle">Agregar Nueva Categoría</div>
                 <button class="close-btn" onclick="closeModal('categoryModal')">&times;</button>
             </div>
+            <input type="hidden" id="editingCatId" value="">
             <div class="form-group">
                 <label class="form-label">Emoji / Icono</label>
                 <input type="text" class="form-input" id="catEmoji" placeholder="Ej: 🍕, 🎬, 🚗">
@@ -343,7 +356,7 @@
                     <option value="both">Ambos</option>
                 </select>
             </div>
-            <button class="btn-submit" onclick="saveNewCategory()">Guardar Categoría</button>
+            <button class="btn-submit" id="btnSaveCat" onclick="saveNewCategory()">Guardar Categoría</button>
         </div>
     </div>
 
@@ -414,7 +427,7 @@
     <!-- Módulo JS de Firebase Integrado con la Lógica -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCGo0gihOsCOEXMEXDaTzayqCo-tbJvkDk",
@@ -671,15 +684,39 @@
             document.getElementById('profileMonthlyExp').innerText = `$${monthlyExp.toFixed(2)}`;
             document.getElementById('profileWeeklyExp').innerText = `$${weeklyExp.toFixed(2)}`;
 
-            const profAccContainer = document.getElementById('profileAccountsContainer');
-            profAccContainer.innerHTML = '';
+            // Render lista de gestión de Cuentas en Perfil
+            const manageAccsList = document.getElementById('manageAccountsList');
+            manageAccsList.innerHTML = '';
             (window.state.accounts || []).forEach(acc => {
-                const isUSD = acc.currency === 'USD';
-                const symbol = isUSD ? '$' : 'Bs.';
-                profAccContainer.innerHTML += `
-                    <div class="account-card">
-                        <span class="account-name">${acc.name}</span>
-                        <span class="account-val">${symbol} ${acc.balance.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                const symbol = acc.currency === 'USD' ? '$' : 'Bs.';
+                manageAccsList.innerHTML += `
+                    <div class="manage-item">
+                        <div class="manage-item-info">
+                            <i class="fa-solid fa-wallet" style="color: var(--accent-primary);"></i>
+                            <span>${acc.name} (${symbol} ${acc.balance.toFixed(2)})</span>
+                        </div>
+                        <div class="tx-actions">
+                            <button class="btn-tx-action" onclick="editAccount('${acc.id}')"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-tx-action delete" onclick="deleteAccount('${acc.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render lista de gestión de Categorías en Perfil
+            const manageCatsList = document.getElementById('manageCategoriesList');
+            manageCatsList.innerHTML = '';
+            (window.state.categories || []).forEach(cat => {
+                manageCatsList.innerHTML += `
+                    <div class="manage-item">
+                        <div class="manage-item-info">
+                            <span style="font-size: 1.1rem;">${cat.icon}</span>
+                            <span>${cat.name}</span>
+                        </div>
+                        <div class="tx-actions">
+                            <button class="btn-tx-action" onclick="editCategory('${cat.id}')"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-tx-action delete" onclick="deleteCategory('${cat.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </div>
                 `;
             });
@@ -770,12 +807,36 @@
         }
 
         window.openAddCategoryModal = function() {
+            document.getElementById('editingCatId').value = '';
+            document.getElementById('catModalTitle').innerText = 'Agregar Nueva Categoría';
+            document.getElementById('btnSaveCat').innerText = 'Guardar Categoría';
             document.getElementById('catEmoji').value = '';
             document.getElementById('catName').value = '';
             document.getElementById('categoryModal').classList.add('active');
         };
 
+        window.editCategory = function(id) {
+            const cat = (window.state.categories || []).find(c => c.id === id);
+            if (!cat) return;
+
+            document.getElementById('editingCatId').value = cat.id;
+            document.getElementById('catModalTitle').innerText = 'Editar Categoría';
+            document.getElementById('btnSaveCat').innerText = 'Actualizar Categoría';
+            document.getElementById('catEmoji').value = cat.icon;
+            document.getElementById('catName').value = cat.name;
+            document.getElementById('catType').value = cat.type || 'expense';
+
+            document.getElementById('categoryModal').classList.add('active');
+        };
+
+        window.deleteCategory = function(id) {
+            if (!confirm('¿Deseas eliminar esta categoría?')) return;
+            window.state.categories = window.state.categories.filter(c => c.id !== id);
+            saveStateToStorage();
+        };
+
         window.saveNewCategory = function() {
+            const editingId = document.getElementById('editingCatId').value;
             const emoji = document.getElementById('catEmoji').value.trim() || '📌';
             const name = document.getElementById('catName').value.trim();
             const type = document.getElementById('catType').value;
@@ -785,27 +846,68 @@
                 return;
             }
 
-            window.state.categories.push({
-                id: 'cat_' + Date.now(),
-                name: name,
-                icon: emoji,
-                type: type
-            });
+            if (editingId) {
+                const index = window.state.categories.findIndex(c => c.id === editingId);
+                if (index !== -1) {
+                    const oldName = window.state.categories[index].name;
+                    window.state.categories[index] = { id: editingId, name, icon: emoji, type };
+                    
+                    // Actualizar transacciones antiguas con el nuevo nombre
+                    (window.state.transactions || []).forEach(tx => {
+                        if (tx.category === oldName) tx.category = name;
+                    });
+                }
+            } else {
+                window.state.categories.push({
+                    id: 'cat_' + Date.now(),
+                    name: name,
+                    icon: emoji,
+                    type: type
+                });
+            }
 
             saveStateToStorage();
             closeModal('categoryModal');
             populateCategoryDropdown(currentTxType);
-            document.getElementById('txCategory').value = name;
         };
 
         window.openAddAccountModal = function() {
+            document.getElementById('editingAccId').value = '';
+            document.getElementById('accountModalTitle').innerText = 'Agregar Cuenta / Tarjeta';
+            document.getElementById('btnSaveAcc').innerText = 'Crear Cuenta';
             document.getElementById('accName').value = '';
             document.getElementById('accBalance').value = '';
             document.getElementById('accountModal').classList.add('active');
         };
 
+        window.editAccount = function(id) {
+            const acc = (window.state.accounts || []).find(a => a.id === id);
+            if (!acc) return;
+
+            document.getElementById('editingAccId').value = acc.id;
+            document.getElementById('accountModalTitle').innerText = 'Editar Cuenta';
+            document.getElementById('btnSaveAcc').innerText = 'Actualizar Cuenta';
+            document.getElementById('accName').value = acc.name;
+            document.getElementById('accType').value = acc.type;
+            document.getElementById('accCurrency').value = acc.currency;
+            document.getElementById('accBalance').value = acc.balance;
+
+            document.getElementById('accountModal').classList.add('active');
+        };
+
+        window.deleteAccount = function(id) {
+            if ((window.state.accounts || []).length <= 1) {
+                alert('Debes tener al menos una cuenta registrada.');
+                return;
+            }
+            if (!confirm('¿Deseas eliminar esta cuenta?')) return;
+            window.state.accounts = window.state.accounts.filter(a => a.id !== id);
+            saveStateToStorage();
+        };
+
         window.saveNewAccount = function() {
-            const name = document.getElementById('accName').value;
+            const editingId = document.getElementById('editingAccId').value;
+            const name = document.getElementById('accName').value.trim();
             const type = document.getElementById('accType').value;
             const currency = document.getElementById('accCurrency').value;
             const balance = parseFloat(document.getElementById('accBalance').value) || 0;
@@ -815,13 +917,20 @@
                 return;
             }
 
-            window.state.accounts.push({
-                id: 'acc_' + Date.now(),
-                name: name,
-                type: type,
-                currency: currency,
-                balance: balance
-            });
+            if (editingId) {
+                const index = window.state.accounts.findIndex(a => a.id === editingId);
+                if (index !== -1) {
+                    window.state.accounts[index] = { id: editingId, name, type, currency, balance };
+                }
+            } else {
+                window.state.accounts.push({
+                    id: 'acc_' + Date.now(),
+                    name: name,
+                    type: type,
+                    currency: currency,
+                    balance: balance
+                });
+            }
 
             saveStateToStorage();
             closeModal('accountModal');
