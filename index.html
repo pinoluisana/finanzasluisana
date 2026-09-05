@@ -57,7 +57,12 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding-bottom: 90px; transition: background-color 0.3s, color 0.3s; }
 
-        .app-container { width: 100%; max-width: 480px; padding: 20px 16px; display: flex; flex-direction: column; gap: 18px; }
+        .app-layout { width: 100%; max-width: 480px; padding: 20px 16px; display: flex; flex-direction: column; gap: 18px; }
+
+        /* NAVEGACIÓN LATERAL (SÓLO WEB) */
+        .desktop-sidebar { display: none; }
+
+        .app-container { width: 100%; display: flex; flex-direction: column; gap: 18px; }
 
         .view-section { display: none; flex-direction: column; gap: 18px; width: 100%; }
         .view-section.active { display: flex; }
@@ -125,15 +130,17 @@
 
         /* Módulos de Gestión de Cuentas y Categorías */
         .management-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--card-shadow); }
+        .management-grid { display: flex; flex-direction: column; gap: 18px; }
         .management-list { display: flex; flex-direction: column; gap: 10px; }
         .manage-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--bg-input); border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 700; }
         .manage-item-info { display: flex; align-items: center; gap: 10px; }
 
+        .charts-wrapper { display: flex; flex-direction: column; gap: 18px; }
         .chart-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--card-shadow); }
         .chart-box h4 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .chart-container { position: relative; width: 100%; max-width: 280px; margin: 0 auto; }
 
-        /* Navegación Inferior */
+        /* Navegación Inferior (Móvil) */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 68px; background: var(--nav-bg); backdrop-filter: blur(12px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 90; }
         .nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; width: 50%; transition: color 0.2s; }
         .nav-item i { font-size: 1.25rem; }
@@ -160,130 +167,193 @@
 
         .conversion-preview { font-size: 0.85rem; font-weight: 800; color: var(--accent-green); background: rgba(75, 169, 95, 0.12); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(75, 169, 95, 0.3); display: flex; justify-content: space-between; align-items: center; }
         .rate-info-tag { font-size: 0.78rem; color: var(--accent-orange); font-weight: 700; }
+
+        /* =========================================================
+           ADAPTACIÓN RESPONSIVA PARA VERSIÓN WEB / ESCRITORIO
+        ========================================================= */
+        @media (min-width: 768px) {
+            body { padding-bottom: 0; align-items: center; min-height: 100vh; }
+            .app-layout { max-width: 1100px; display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 40px 24px; }
+
+            /* Ocultar barra inferior y mostrar sidebar lateral */
+            .bottom-nav { display: none; }
+            .desktop-sidebar { display: flex; flex-direction: column; gap: 24px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--card-shadow); height: fit-content; position: sticky; top: 40px; }
+            
+            .sidebar-logo { font-size: 1.15rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+            .sidebar-menu { display: flex; flex-direction: column; gap: 8px; }
+            .sidebar-btn { background: none; border: none; padding: 14px 16px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; color: var(--text-muted); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; width: 100%; text-align: left; }
+            .sidebar-btn:hover { background: var(--bg-input); color: var(--text-main); }
+            .sidebar-btn.active { background: var(--accent-primary); color: #ffffff; }
+
+            .app-header { padding: 0 0 10px 0; }
+
+            /* Ajustes en la vista Inicio en Web */
+            .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .account-card { min-width: auto; }
+
+            /* Ajustes en la vista Perfil en Web */
+            .stats-grid { grid-template-columns: repeat(3, 1fr); }
+            .stat-card.full { grid-column: span 1; }
+
+            .management-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            .charts-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+            /* Centrar modales en pantalla de escritorio */
+            .modal-overlay { align-items: center; }
+            .modal-content { border-radius: var(--radius-lg); animation: fadeIn 0.2s ease; }
+            @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Encabezado Principal -->
-        <div class="app-header">
-            <div class="user-profile">
-                <div class="avatar" onclick="switchTab('profile')">L</div>
-                <div>
-                    <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700;">Control de Gastos</div>
-                    <div style="font-weight: 800; font-size: 1rem;">Mis Finanzas</div>
-                </div>
+    <div class="app-layout">
+        <!-- Sidebar para Versión Web / Pantallas Grandes -->
+        <aside class="desktop-sidebar">
+            <div class="sidebar-logo">
+                <i class="fa-solid fa-wallet" style="color: var(--accent-primary);"></i>
+                <span>Mis Finanzas</span>
             </div>
-            
-            <div class="header-actions">
-                <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">
-                    <i class="fa-solid fa-moon"></i>
+            <div class="sidebar-menu">
+                <button class="sidebar-btn active" id="deskNavHome" onclick="switchTab('home')">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Inicio</span>
                 </button>
-                <div class="bcv-pill" onclick="openRateManagerModal()">
-                    <i class="fa-solid fa-arrows-rotate" id="syncIcon"></i>
-                    <span id="bcvDisplay">BCV: ...</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- VISTA 1: INICIO -->
-        <div id="view-home" class="view-section active">
-            <div class="card-balance">
-                <div class="balance-label">Disponible Total</div>
-                <div class="balance-amount" id="availableUSD">$0.00</div>
-                <div class="balance-bs">
-                    <i class="fa-solid fa-coins" style="font-size: 0.85rem;"></i>
-                    <span id="availableVES">≈ 0.00 Bs. (Tasa Hoy)</span>
-                </div>
-            </div>
-
-            <!-- Resumen de Cuentas -->
-            <div class="accounts-header">
-                <span style="font-weight: 800; font-size: 1rem;">Mis Cuentas</span>
-                <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddAccountModal()">+ Nueva Cuenta</span>
-            </div>
-            <div class="accounts-grid" id="accountsContainer"></div>
-
-            <div class="actions-grid">
-                <button class="btn-action expense" onclick="openTxModal('expense')">
-                    <i class="fa-solid fa-arrow-down"></i> Registrar Gasto
-                </button>
-                <button class="btn-action income" onclick="openTxModal('income')">
-                    <i class="fa-solid fa-arrow-up"></i> Registrar Ingreso
+                <button class="sidebar-btn" id="deskNavProfile" onclick="switchTab('profile')">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Perfil</span>
                 </button>
             </div>
+        </aside>
 
-            <div class="section-title">
-                <span>Últimos Movimientos</span>
-            </div>
-
-            <div class="tx-list" id="txContainer"></div>
-        </div>
-
-        <!-- VISTA 2: PERFIL & CONFIGURACIÓN -->
-        <div id="view-profile" class="view-section">
-            <div class="profile-card-header">
-                <div class="avatar-large">L</div>
-                <div>
-                    <h3 style="font-size: 1.15rem; font-weight: 800;">Luisana Pino</h3>
-                    <p style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Gestión de Cuentas & Categorías</p>
+        <!-- Contenedor Principal de la App -->
+        <div class="app-container">
+            <!-- Encabezado Principal -->
+            <div class="app-header">
+                <div class="user-profile">
+                    <div class="avatar" onclick="switchTab('profile')">L</div>
+                    <div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700;">Control de Gastos</div>
+                        <div style="font-weight: 800; font-size: 1rem;">Mis Finanzas</div>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <div class="bcv-pill" onclick="openRateManagerModal()">
+                        <i class="fa-solid fa-arrows-rotate" id="syncIcon"></i>
+                        <span id="bcvDisplay">BCV: ...</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card full">
-                    <div class="stat-title">TE QUEDA DISPONIBLE</div>
-                    <div class="stat-value" id="profileRemaining" style="color: var(--accent-green);">$0.00</div>
+            <!-- VISTA 1: INICIO -->
+            <div id="view-home" class="view-section active">
+                <div class="card-balance">
+                    <div class="balance-label">Disponible Total</div>
+                    <div class="balance-amount" id="availableUSD">$0.00</div>
+                    <div class="balance-bs">
+                        <i class="fa-solid fa-coins" style="font-size: 0.85rem;"></i>
+                        <span id="availableVES">≈ 0.00 Bs. (Tasa Hoy)</span>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-title">GASTOS DEL MES</div>
-                    <div class="stat-value" id="profileMonthlyExp" style="color: var(--accent-pink);">$0.00</div>
+
+                <!-- Resumen de Cuentas -->
+                <div class="accounts-header">
+                    <span style="font-weight: 800; font-size: 1rem;">Mis Cuentas</span>
+                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddAccountModal()">+ Nueva Cuenta</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-title">GASTOS DE LA SEMANA</div>
-                    <div class="stat-value" id="profileWeeklyExp" style="color: var(--accent-orange);">$0.00</div>
+                <div class="accounts-grid" id="accountsContainer"></div>
+
+                <div class="actions-grid">
+                    <button class="btn-action expense" onclick="openTxModal('expense')">
+                        <i class="fa-solid fa-arrow-down"></i> Registrar Gasto
+                    </button>
+                    <button class="btn-action income" onclick="openTxModal('income')">
+                        <i class="fa-solid fa-arrow-up"></i> Registrar Ingreso
+                    </button>
                 </div>
+
+                <div class="section-title">
+                    <span>Últimos Movimientos</span>
+                </div>
+
+                <div class="tx-list" id="txContainer"></div>
             </div>
 
-            <!-- MÓDULO GESTIÓN DE CUENTAS -->
-            <div class="management-box">
-                <div class="section-title" style="margin-top: 0;">
-                    <span>Mis Cuentas</span>
-                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddAccountModal()">+ Crear Cuenta</span>
+            <!-- VISTA 2: PERFIL & CONFIGURACIÓN -->
+            <div id="view-profile" class="view-section">
+                <div class="profile-card-header">
+                    <div class="avatar-large">L</div>
+                    <div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800;">Luisana Pino</h3>
+                        <p style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Gestión de Cuentas & Categorías</p>
+                    </div>
                 </div>
-                <div class="management-list" id="manageAccountsList"></div>
-            </div>
 
-            <!-- MÓDULO GESTIÓN DE CATEGORÍAS -->
-            <div class="management-box">
-                <div class="section-title" style="margin-top: 0;">
-                    <span>Mis Categorías</span>
-                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddCategoryModal()">+ Crear Categoría</span>
+                <div class="stats-grid">
+                    <div class="stat-card full">
+                        <div class="stat-title">TE QUEDA DISPONIBLE</div>
+                        <div class="stat-value" id="profileRemaining" style="color: var(--accent-green);">$0.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">GASTOS DEL MES</div>
+                        <div class="stat-value" id="profileMonthlyExp" style="color: var(--accent-pink);">$0.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">GASTOS DE LA SEMANA</div>
+                        <div class="stat-value" id="profileWeeklyExp" style="color: var(--accent-orange);">$0.00</div>
+                    </div>
                 </div>
-                <div class="management-list" id="manageCategoriesList"></div>
-            </div>
 
-            <button class="btn-excel" onclick="exportToExcel()">
-                <i class="fa-solid fa-file-excel"></i> Exportar Mis Datos a Excel (.xlsx)
-            </button>
+                <!-- MÓDULO GESTIÓN EN COLUMNAS (WEB) -->
+                <div class="management-grid">
+                    <!-- MÓDULO GESTIÓN DE CUENTAS -->
+                    <div class="management-box">
+                        <div class="section-title" style="margin-top: 0;">
+                            <span>Mis Cuentas</span>
+                            <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddAccountModal()">+ Crear Cuenta</span>
+                        </div>
+                        <div class="management-list" id="manageAccountsList"></div>
+                    </div>
 
-            <div class="chart-box">
-                <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-pink);"></i> ¿En qué has gastado?</h4>
-                <div class="chart-container">
-                    <canvas id="expensesChart"></canvas>
+                    <!-- MÓDULO GESTIÓN DE CATEGORÍAS -->
+                    <div class="management-box">
+                        <div class="section-title" style="margin-top: 0;">
+                            <span>Mis Categorías</span>
+                            <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddCategoryModal()">+ Crear Categoría</span>
+                        </div>
+                        <div class="management-list" id="manageCategoriesList"></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="chart-box">
-                <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-green);"></i> ¿De dónde vienen tus ingresos?</h4>
-                <div class="chart-container">
-                    <canvas id="incomeChart"></canvas>
+                <button class="btn-excel" onclick="exportToExcel()">
+                    <i class="fa-solid fa-file-excel"></i> Exportar Mis Datos a Excel (.xlsx)
+                </button>
+
+                <!-- GRÁFICOS EN PARALELO (WEB) -->
+                <div class="charts-wrapper">
+                    <div class="chart-box">
+                        <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-pink);"></i> ¿En qué has gastado?</h4>
+                        <div class="chart-container">
+                            <canvas id="expensesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-box">
+                        <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-green);"></i> ¿De dónde vienen tus ingresos?</h4>
+                        <div class="chart-container">
+                            <canvas id="incomeChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Navegación Inferior -->
+    <!-- Navegación Inferior (Móvil) -->
     <nav class="bottom-nav">
         <button class="nav-item active" id="navHome" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
@@ -512,13 +582,16 @@
         window.switchTab = function(tab) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
 
             if (tab === 'home') {
                 document.getElementById('view-home').classList.add('active');
                 document.getElementById('navHome').classList.add('active');
+                if (document.getElementById('deskNavHome')) document.getElementById('deskNavHome').classList.add('active');
             } else if (tab === 'profile') {
                 document.getElementById('view-profile').classList.add('active');
                 document.getElementById('navProfile').classList.add('active');
+                if (document.getElementById('deskNavProfile')) document.getElementById('deskNavProfile').classList.add('active');
                 renderProfileView();
             }
         };
@@ -680,7 +753,6 @@
             document.getElementById('profileMonthlyExp').innerText = `$${monthlyExp.toFixed(2)}`;
             document.getElementById('profileWeeklyExp').innerText = `$${weeklyExp.toFixed(2)}`;
 
-            // Render Lista Completa de Cuentas en Perfil
             const manageAccsList = document.getElementById('manageAccountsList');
             manageAccsList.innerHTML = '';
             (window.state.accounts || []).forEach(acc => {
@@ -699,7 +771,6 @@
                 `;
             });
 
-            // Render Lista Completa de Categorías en Perfil
             const manageCatsList = document.getElementById('manageCategoriesList');
             manageCatsList.innerHTML = '';
             (window.state.categories || []).forEach(cat => {
