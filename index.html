@@ -17,8 +17,8 @@
 
     <style>
         :root[data-theme="light"] {
-            /* Paleta Plana (Sin Degradados) y Descansada */
-            --bg-primary: #F8F7FF;        /* Fondo principal lila suave */
+            /* Paleta Plana y Descansada con el nuevo fondo solicitado */
+            --bg-primary: #F8F7FF;        /* Fondo principal blanco no tan blanco */
             --bg-card: #F4EEFC;           /* Tarjetas base lavanda pastel */
             --bg-card-alt: #E3D7FA;       /* Tarjetas de contraste */
             --bg-input: #DDD0F7;          /* Inputs y campos */
@@ -43,7 +43,7 @@
             --text-main: #2B2238;         /* Texto morado oscuro */
             --text-muted: #6B5B82;        /* Texto secundario */
             --border-color: #D3C1F0;
-            --nav-bg: rgba(234, 226, 248, 0.98);
+            --nav-bg: rgba(248, 247, 255, 0.98);
             --radius-lg: 22px;
             --radius-md: 16px;
             --radius-sm: 10px;
@@ -107,7 +107,7 @@
 
         .bcv-pill { background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer; box-shadow: var(--card-shadow); color: var(--text-main); }
 
-        /* BANNER PRINCIPAL / BALANCE (Color plano) */
+        /* BANNER PRINCIPAL / BALANCE */
         .card-balance { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px; position: relative; box-shadow: var(--card-shadow); }
         .balance-label { font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
         .balance-amount { font-size: 2.3rem; font-weight: 800; margin: 6px 0 2px 0; color: var(--text-main); }
@@ -117,20 +117,29 @@
         .accounts-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .accounts-grid::-webkit-scrollbar { display: none; }
 
-        /* TARJETAS DE CUENTAS CON COLORES DISTINTIVOS */
+        /* TARJETAS DE CUENTAS */
         .account-card { border: 1px solid var(--border-color); min-width: 160px; padding: 16px; border-radius: var(--radius-md); flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--card-shadow); transition: transform 0.15s; }
         .account-card:hover { transform: translateY(-2px); }
         .account-name { font-size: 0.82rem; opacity: 0.85; font-weight: 800; }
         .account-val { font-size: 1.15rem; font-weight: 800; }
         .account-type-tag { font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; align-self: flex-start; background: rgba(0,0,0,0.06); }
 
-        /* BOTONES DE ACCIÓN (3 COLUMNAS PARA INCLUIR TRANSFERENCIA) */
+        /* BOTONES DE ACCIÓN */
         .actions-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .btn-action { border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 8px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.82rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; box-shadow: var(--card-shadow); transition: transform 0.1s; text-align: center; }
         .btn-action:active { transform: scale(0.98); }
         .btn-action.income { background-color: var(--accent-blue-light); }
         .btn-action.expense { background-color: var(--accent-pink-light); }
         .btn-action.transfer { background-color: var(--bg-card-alt); }
+
+        /* FILTRO MES Y AÑO */
+        .filter-container { display: flex; gap: 10px; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; box-shadow: var(--card-shadow); }
+        .filter-select { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--text-main); font-size: 0.85rem; font-weight: 700; outline: none; width: 100%; }
+
+        /* ALTERNADOR GRAFICOS (SEMANA / MES) */
+        .chart-toggle-bar { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-card-alt); border-radius: var(--radius-md); padding: 4px; gap: 4px; }
+        .btn-toggle-view { background: none; border: none; color: var(--text-muted); padding: 8px 12px; border-radius: var(--radius-sm); font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+        .btn-toggle-view.active { background: var(--accent-primary); color: #fff; }
 
         .section-title { font-size: 1.05rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; margin-top: 4px; color: var(--text-main); }
         .tx-list { display: flex; flex-direction: column; gap: 10px; }
@@ -155,7 +164,7 @@
         .profile-card-header { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: var(--card-shadow); }
         .avatar-large { width: 58px; height: 58px; border-radius: 50%; background-color: var(--accent-primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.6rem; color: #fff; box-shadow: var(--card-shadow); }
         
-        /* ESTADÍSTICAS CON COLORES DIFERENCIADOS */
+        /* ESTADÍSTICAS */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .stat-card { border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-md); box-shadow: var(--card-shadow); }
         .stat-card.full { grid-column: span 2; }
@@ -304,7 +313,7 @@
                 </div>
                 <div class="accounts-grid" id="accountsContainer"></div>
 
-                <!-- ACCIONES CON TRES OPCIONES -->
+                <!-- ACCIONES -->
                 <div class="actions-grid">
                     <button class="btn-action expense" onclick="openTxModal('expense')">
                         <i class="fa-solid fa-arrow-down" style="font-size: 1.1rem;"></i> Registrar Gasto
@@ -317,8 +326,15 @@
                     </button>
                 </div>
 
+                <!-- FILTRO MES A MES -->
+                <div class="filter-container">
+                    <i class="fa-solid fa-filter" style="color: var(--accent-primary);"></i>
+                    <select class="filter-select" id="filterMonth" onchange="render()"></select>
+                    <select class="filter-select" id="filterYear" onchange="render()"></select>
+                </div>
+
                 <div class="section-title">
-                    <span>Últimos Movimientos</span>
+                    <span>Movimientos del Mes</span>
                 </div>
 
                 <div class="tx-list" id="txContainer"></div>
@@ -341,12 +357,39 @@
                         <div class="stat-value" id="profileRemaining">$0.00</div>
                     </div>
                     <div class="stat-card monthly">
-                        <div class="stat-title">GASTOS DEL MES</div>
+                        <div class="stat-title">GASTOS DEL MES SELECCIONADO</div>
                         <div class="stat-value" id="profileMonthlyExp">$0.00</div>
                     </div>
                     <div class="stat-card weekly">
                         <div class="stat-title">GASTOS DE LA SEMANA</div>
                         <div class="stat-value" id="profileWeeklyExp">$0.00</div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICOS CON OPCIÓN MES / SEMANA -->
+                <div class="chart-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-pink);"></i> Visualización de Gráficos</h4>
+                    </div>
+                    <div class="chart-toggle-bar">
+                        <button class="btn-toggle-view active" id="btnChartMonth" onclick="setChartTimeframe('month')">Ver del Mes</button>
+                        <button class="btn-toggle-view" id="btnChartWeek" onclick="setChartTimeframe('week')">Ver de la Semana</button>
+                    </div>
+                </div>
+
+                <div class="charts-wrapper">
+                    <div class="chart-box">
+                        <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-pink);"></i> ¿En qué has gastado?</h4>
+                        <div class="chart-container">
+                            <canvas id="expensesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-box">
+                        <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-green);"></i> ¿De dónde vienen tus ingresos?</h4>
+                        <div class="chart-container">
+                            <canvas id="incomeChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -374,23 +417,6 @@
                 <button class="btn-excel" onclick="exportToExcel()">
                     <i class="fa-solid fa-file-excel"></i> Exportar Mis Datos a Excel (.xlsx)
                 </button>
-
-                <!-- GRÁFICOS -->
-                <div class="charts-wrapper">
-                    <div class="chart-box">
-                        <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-pink);"></i> ¿En qué has gastado?</h4>
-                        <div class="chart-container">
-                            <canvas id="expensesChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="chart-box">
-                        <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-green);"></i> ¿De dónde vienen tus ingresos?</h4>
-                        <div class="chart-container">
-                            <canvas id="incomeChart"></canvas>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -470,7 +496,7 @@
         </div>
     </div>
 
-    <!-- MODAL REGISTRAR MOVIMIENTO (GASTO/INGRESO) -->
+    <!-- MODAL REGISTRAR MOVIMIENTO -->
     <div class="modal-overlay" id="txModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -517,7 +543,7 @@
         </div>
     </div>
 
-    <!-- MODAL NUEVO: TRANSFERENCIA ENTRE CUENTAS -->
+    <!-- MODAL TRANSFERENCIA -->
     <div class="modal-overlay" id="transferModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -541,7 +567,6 @@
                 <input type="number" step="0.01" class="form-input" id="trAmount" placeholder="0.00" oninput="updateTransferPreview()">
             </div>
 
-            <!-- CAMPO DINÁMICO DE TASA DE CAMBIO (SOLO VISIBLE CUANDO HAY CONVERSIÓN DE MONEDAS) -->
             <div class="form-group" id="trRateGroup" style="display: none;">
                 <label class="form-label" style="color: var(--accent-primary);">
                     <span>Tasa de Cambio Aplicada (Bs. por $)</span>
@@ -583,7 +608,7 @@
         </div>
     </div>
 
-    <!-- Módulo JS de Firebase -->
+    <!-- Módulo JS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -648,8 +673,43 @@
         let currentCurrency = 'USD';
         let expensesChart = null;
         let incomeChart = null;
+        let chartTimeframe = 'month'; // 'month' o 'week'
+
+        // Inicializar Filtros de Fecha
+        function initFilters() {
+            const monthSelect = document.getElementById('filterMonth');
+            const yearSelect = document.getElementById('filterYear');
+            
+            if (!monthSelect || monthSelect.options.length > 0) return;
+
+            const months = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+            
+            const now = new Date();
+            const currentMonthIndex = now.getMonth();
+            const currentYearNum = now.getFullYear();
+
+            months.forEach((m, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.text = m;
+                if (idx === currentMonthIndex) opt.selected = true;
+                monthSelect.appendChild(opt);
+            });
+
+            for (let y = currentYearNum - 2; y <= currentYearNum + 2; y++) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.text = y;
+                if (y === currentYearNum) opt.selected = true;
+                yearSelect.appendChild(opt);
+            }
+        }
 
         onSnapshot(stateDocRef, (docSnap) => {
+            initFilters();
             if (docSnap.exists()) {
                 window.state = docSnap.data();
                 if (!window.state.categories || window.state.categories.length === 0) {
@@ -706,6 +766,13 @@
                 if (document.getElementById('deskNavProfile')) document.getElementById('deskNavProfile').classList.add('active');
                 renderProfileView();
             }
+        };
+
+        window.setChartTimeframe = function(frame) {
+            chartTimeframe = frame;
+            document.getElementById('btnChartMonth').classList.toggle('active', frame === 'month');
+            document.getElementById('btnChartWeek').classList.toggle('active', frame === 'week');
+            renderCharts();
         };
 
         async function fetchBcvRateForDate(dateStr) {
@@ -796,15 +863,24 @@
                 `;
             });
 
+            // FILTRAR MOVIMIENTOS POR MES Y AÑO
+            const selectedMonth = parseInt(document.getElementById('filterMonth').value);
+            const selectedYear = parseInt(document.getElementById('filterYear').value);
+
             const txContainer = document.getElementById('txContainer');
             txContainer.innerHTML = '';
 
-            if (!window.state.transactions || window.state.transactions.length === 0) {
-                txContainer.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px 0; font-size:0.9rem; font-weight:600;">No hay movimientos registrados.</div>';
+            const filteredTxs = (window.state.transactions || []).filter(tx => {
+                const d = new Date(tx.date + 'T00:00:00');
+                return d.getMonth() === selectedMonth && d.getFullYear() === selectedYear;
+            });
+
+            if (filteredTxs.length === 0) {
+                txContainer.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px 0; font-size:0.9rem; font-weight:600;">No hay movimientos en este mes.</div>';
                 return;
             }
 
-            window.state.transactions.forEach(tx => {
+            filteredTxs.forEach(tx => {
                 const categoryObj = (window.state.categories || []).find(c => c.name === tx.category) || { icon: '📦' };
                 const accountObj = (window.state.accounts || []).find(a => a.id === tx.accountId);
                 const accountName = accountObj ? accountObj.name : 'General';
@@ -855,10 +931,10 @@
             });
             document.getElementById('profileRemaining').innerText = `$${totalUSD.toFixed(2)}`;
 
-            const now = new Date();
-            const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth();
+            const selectedMonth = parseInt(document.getElementById('filterMonth').value);
+            const selectedYear = parseInt(document.getElementById('filterYear').value);
 
+            const now = new Date();
             const dayOfWeek = now.getDay();
             const diffToMonday = now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
             const startOfWeek = new Date(now.setDate(diffToMonday));
@@ -870,7 +946,7 @@
             (window.state.transactions || []).forEach(tx => {
                 if (tx.type === 'expense') {
                     const txDate = new Date(tx.date + 'T00:00:00');
-                    if (txDate.getFullYear() === currentYear && txDate.getMonth() === currentMonth) {
+                    if (txDate.getFullYear() === selectedYear && txDate.getMonth() === selectedMonth) {
                         monthlyExp += tx.amountUSD;
                     }
                     if (txDate >= startOfWeek) {
@@ -930,11 +1006,35 @@
             const expData = {};
             const incData = {};
 
+            const selectedMonth = parseInt(document.getElementById('filterMonth').value);
+            const selectedYear = parseInt(document.getElementById('filterYear').value);
+
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            const diffToMonday = now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
+            const startOfWeek = new Date(now.setDate(diffToMonday));
+            startOfWeek.setHours(0, 0, 0, 0);
+
             (window.state.transactions || []).forEach(tx => {
-                if (tx.type === 'expense') {
-                    expData[tx.category] = (expData[tx.category] || 0) + tx.amountUSD;
-                } else if (tx.type === 'income') {
-                    incData[tx.category] = (incData[tx.category] || 0) + tx.amountUSD;
+                const txDate = new Date(tx.date + 'T00:00:00');
+                let includeInChart = false;
+
+                if (chartTimeframe === 'month') {
+                    if (txDate.getMonth() === selectedMonth && txDate.getFullYear() === selectedYear) {
+                        includeInChart = true;
+                    }
+                } else if (chartTimeframe === 'week') {
+                    if (txDate >= startOfWeek) {
+                        includeInChart = true;
+                    }
+                }
+
+                if (includeInChart) {
+                    if (tx.type === 'expense') {
+                        expData[tx.category] = (expData[tx.category] || 0) + tx.amountUSD;
+                    } else if (tx.type === 'income') {
+                        incData[tx.category] = (incData[tx.category] || 0) + tx.amountUSD;
+                    }
                 }
             });
 
@@ -998,7 +1098,7 @@
             XLSX.writeFile(workbook, `Finanzas_Luisana_${TODAY}.xlsx`);
         };
 
-        /* LÓGICA DE TRANSFERENCIAS ENTRE CUENTAS CON TASA EDITABLE */
+        /* LÓGICA DE TRANSFERENCIAS */
         window.openTransferModal = async function() {
             const accounts = window.state.accounts || [];
             if (accounts.length < 2) {
@@ -1127,7 +1227,6 @@
                 }
             }
 
-            // Aplicar cambios en saldos
             fromAcc.balance -= amount;
             toAcc.balance += receivedAmount;
 
