@@ -109,7 +109,6 @@
         .accounts-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .accounts-grid::-webkit-scrollbar { display: none; }
 
-        /* TARJETAS DE CUENTAS CON BORDES Y PUNTOS DE COLOR ÚNICO */
         .account-card { border: 1px solid var(--border-color); min-width: 175px; padding: 16px; border-radius: var(--radius-md); flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; box-shadow: var(--card-shadow); transition: transform 0.15s; border-left: 6px solid transparent; }
         .account-card:hover { transform: translateY(-2px); }
         .account-name { font-size: 0.82rem; opacity: 0.85; font-weight: 800; display: flex; align-items: center; justify-content: space-between; }
@@ -207,6 +206,11 @@
         .conversion-preview { font-size: 0.85rem; font-weight: 800; color: var(--text-main); background: var(--bg-card-alt); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .rate-info-tag { font-size: 0.78rem; color: var(--text-muted); font-weight: 700; }
 
+        /* NOTIFICACIÓN CON BOTÓN DESHACER (UNDO TOAST) */
+        .undo-toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background-color: var(--text-main); color: var(--bg-primary); padding: 12px 18px; border-radius: 30px; box-shadow: var(--card-shadow); display: none; align-items: center; gap: 14px; z-index: 200; font-size: 0.85rem; font-weight: 700; max-width: 90%; animation: fadeInToast 0.2s ease; }
+        @keyframes fadeInToast { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        .undo-btn { background: var(--accent-primary); color: #ffffff; border: none; padding: 6px 12px; border-radius: 20px; font-weight: 800; cursor: pointer; font-size: 0.78rem; }
+
         @media (min-width: 768px) {
             body { padding-bottom: 0; align-items: center; min-height: 100vh; }
             .app-layout { max-width: 1100px; display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 40px 24px; }
@@ -230,6 +234,7 @@
             .modal-overlay { align-items: center; }
             .modal-content { border-radius: var(--radius-lg); animation: fadeIn 0.2s ease; }
             @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+            .undo-toast { bottom: 30px; }
         }
     </style>
 </head>
@@ -410,24 +415,29 @@
         </button>
     </nav>
 
+    <!-- NOTIFICACIÓN DE DESHACER (UNDO TOAST) -->
+    <div id="undoToast" class="undo-toast">
+        <span id="undoToastMsg">Acción realizada</span>
+        <button class="undo-btn" onclick="triggerUndo()">Deshacer</button>
+    </div>
+
     <!-- MODALES -->
     <div class="modal-overlay" id="accountModal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title" id="accountModalTitle">Agregar Cuenta / Tarjeta</div>
+                <div class="modal-title" id="accountModalTitle">Agregar Cuenta</div>
                 <button class="close-btn" onclick="closeModal('accountModal')">&times;</button>
             </div>
             <input type="hidden" id="editingAccId" value="">
             <div class="form-group">
                 <label class="form-label">Nombre de la Cuenta</label>
-                <input type="text" class="form-input" id="accName" placeholder="Ej: Banesco, Tarjeta BNC, Fondo Ahorro">
+                <input type="text" class="form-input" id="accName" placeholder="Ej: Banesco, Cuenta Verde, Fondo Ahorro">
             </div>
             <div class="form-group">
                 <label class="form-label">Tipo de Cuenta</label>
                 <select class="form-input" id="accType">
-                    <option value="debit">Débito / Cuenta Corriente / Efectivo</option>
+                    <option value="debit">Cuenta Principal / Corriente / Efectivo</option>
                     <option value="savings">Cuenta de Ahorros (Excluida de vista principal y disponible)</option>
-                    <option value="credit">Tarjeta de Crédito</option>
                 </select>
             </div>
             <div class="form-group">
@@ -472,7 +482,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE REGISTRO DE MOVIMIENTO REORDENADO -->
     <div class="modal-overlay" id="txModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -481,13 +490,11 @@
             </div>
             <input type="hidden" id="editingTxId" value="">
             
-            <!-- 1. MONTO -->
             <div class="form-group">
                 <label class="form-label">Monto</label>
                 <input type="number" step="0.01" class="form-input" id="txAmount" placeholder="0.00" oninput="calculateLiveConversion()">
             </div>
 
-            <!-- 2. MONEDA -->
             <div class="form-group">
                 <label class="form-label">Moneda del Pago</label>
                 <div class="currency-toggle">
@@ -496,26 +503,22 @@
                 </div>
             </div>
 
-            <!-- 3. TASA Y CONVERSIÓN EN VIVO -->
             <div class="conversion-preview" id="conversionBox">
                 <span>Equivalente estimado:</span>
                 <span id="conversionValue">0.00</span>
             </div>
             <div class="rate-info-tag" id="rateInfoTag">Cargando tasa oficial...</div>
 
-            <!-- 4. CUENTA AFECTADA -->
             <div class="form-group">
                 <label class="form-label">Cuenta Afectada</label>
                 <select class="form-input" id="txAccountSelect"></select>
             </div>
 
-            <!-- 5. FECHA -->
             <div class="form-group">
                 <label class="form-label">Fecha del Movimiento</label>
                 <input type="date" class="form-input" id="txDate" onchange="onDateChanged()">
             </div>
 
-            <!-- 6. CATEGORÍA -->
             <div class="form-group">
                 <div class="form-label">
                     <span>Categoría / Concepto</span>
@@ -524,7 +527,6 @@
                 <select class="form-input" id="txCategory"></select>
             </div>
 
-            <!-- 7. NOTA / DESCRIPCIÓN -->
             <div class="form-group">
                 <label class="form-label">Descripción / Nota</label>
                 <input type="text" class="form-input" id="txNote" placeholder="Ej: Almuerzo en restaurante, Pago de internet">
@@ -572,18 +574,17 @@
 
         const TODAY = new Date().toISOString().split('T')[0];
 
-        // PALETA DE 10 COLORES TOTALMENTE DISTINTOS Y DIVERSIFICADOS
         const accountColorPalette = [
-            { bg: '#3A86EF', text: '#FFFFFF', tag: 'Azul Real' },       // 0. Azul
-            { bg: '#2EC4B6', text: '#FFFFFF', tag: 'Turquesa' },      // 1. Turquesa
-            { bg: '#FF006E', text: '#FFFFFF', tag: 'Magenta' },       // 2. Magenta / Rosa Fuerte
-            { bg: '#FF9F1C', text: '#FFFFFF', tag: 'Naranja' },       // 3. Naranja
-            { bg: '#8338EC', text: '#FFFFFF', tag: 'Morado' },        // 4. Morado Violeta
-            { bg: '#20BF55', text: '#FFFFFF', tag: 'Verde Esmeralda' },// 5. Verde brillante
-            { bg: '#FF5400', text: '#FFFFFF', tag: 'Coral Fuego' },    // 6. Coral intenso
-            { bg: '#FFD166', text: '#2B2238', tag: 'Amarillo Sol' },   // 7. Amarillo
-            { bg: '#7209B7', text: '#FFFFFF', tag: 'Índigo Oscuro' },  // 8. Índigo
-            { bg: '#00F5D4', text: '#15131C', tag: 'Cian Neón' }       // 9. Cian Neón
+            { bg: '#3A86EF', text: '#FFFFFF', tag: 'Azul Real' },
+            { bg: '#2EC4B6', text: '#FFFFFF', tag: 'Turquesa' },
+            { bg: '#FF006E', text: '#FFFFFF', tag: 'Magenta' },
+            { bg: '#FF9F1C', text: '#FFFFFF', tag: 'Naranja' },
+            { bg: '#8338EC', text: '#FFFFFF', tag: 'Morado' },
+            { bg: '#20BF55', text: '#FFFFFF', tag: 'Verde Esmeralda' },
+            { bg: '#FF5400', text: '#FFFFFF', tag: 'Coral Fuego' },
+            { bg: '#FFD166', text: '#2B2238', tag: 'Amarillo Sol' },
+            { bg: '#7209B7', text: '#FFFFFF', tag: 'Índigo Oscuro' },
+            { bg: '#00F5D4', text: '#15131C', tag: 'Cian Neón' }
         ];
 
         window.state = {
@@ -600,7 +601,43 @@
         let incomeChart = null;
         let chartTimeframe = 'month';
 
-        // Obtener un color completamente único para cada cuenta según su índice en la lista general
+        // SISTEMA DE DESHACER (UNDO)
+        let lastActionState = null;
+        let undoTimer = null;
+
+        function showUndoToast(msg, actionData) {
+            lastActionState = actionData;
+            document.getElementById('undoToastMsg').innerText = msg;
+            const toast = document.getElementById('undoToast');
+            toast.style.display = 'flex';
+
+            if (undoTimer) clearTimeout(undoTimer);
+            undoTimer = setTimeout(() => {
+                toast.style.display = 'none';
+                lastActionState = null;
+            }, 6000);
+        }
+
+        window.triggerUndo = function() {
+            if (!lastActionState) return;
+
+            if (lastActionState.type === 'ADD_TX') {
+                const txIndex = window.state.transactions.findIndex(t => t.id === lastActionState.data.id);
+                if (txIndex !== -1) {
+                    revertAccountBalance(lastActionState.data);
+                    window.state.transactions.splice(txIndex, 1);
+                }
+            } else if (lastActionState.type === 'DELETE_TX') {
+                const tx = lastActionState.data;
+                applyAccountBalance(tx);
+                window.state.transactions.unshift(tx);
+            }
+
+            saveStateToStorage();
+            document.getElementById('undoToast').style.display = 'none';
+            lastActionState = null;
+        };
+
         function getAccountColor(accId) {
             const accIndex = (window.state.accounts || []).findIndex(a => a.id === accId);
             if (accIndex === -1) {
@@ -758,10 +795,9 @@
                 if (acc.type === 'savings') return;
 
                 if (acc.currency === 'USD') {
-                    totalUSD += (acc.type === 'credit' ? -acc.balance : acc.balance);
+                    totalUSD += acc.balance;
                 } else {
-                    const valInUSD = acc.balance / todayRate;
-                    totalUSD += (acc.type === 'credit' ? -valInUSD : valInUSD);
+                    totalUSD += (acc.balance / todayRate);
                 }
             });
 
@@ -771,7 +807,6 @@
             const accContainer = document.getElementById('accountsContainer');
             accContainer.innerHTML = '';
 
-            // Se filtran las cuentas para ignorar las de tipo ahorro ('savings') en la vista principal
             const visibleAccounts = (window.state.accounts || []).filter(acc => acc.type !== 'savings');
 
             if (visibleAccounts.length === 0) {
@@ -796,8 +831,7 @@
                     subValText = `≈ $ ${subValUsd.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
                 }
                 
-                let typeText = 'Débito / Efectivo';
-                if (acc.type === 'credit') typeText = 'Tarjeta Crédito';
+                let typeText = 'Cuenta Principal';
 
                 const colorObj = getAccountColor(acc.id);
                 
@@ -877,9 +911,9 @@
                 if (acc.type === 'savings') return;
 
                 if (acc.currency === 'USD') {
-                    totalUSD += (acc.type === 'credit' ? -acc.balance : acc.balance);
+                    totalUSD += acc.balance;
                 } else {
-                    totalUSD += (acc.type === 'credit' ? -(acc.balance / todayRate) : (acc.balance / todayRate));
+                    totalUSD += (acc.balance / todayRate);
                 }
             });
             document.getElementById('profileRemaining').innerText = `$${totalUSD.toFixed(2)}`;
@@ -1148,7 +1182,7 @@
 
         window.openAddAccountModal = function() {
             document.getElementById('editingAccId').value = '';
-            document.getElementById('accountModalTitle').innerText = 'Agregar Cuenta / Tarjeta';
+            document.getElementById('accountModalTitle').innerText = 'Agregar Cuenta';
             document.getElementById('btnSaveAcc').innerText = 'Crear Cuenta';
             document.getElementById('accName').value = '';
             document.getElementById('accBalance').value = '';
@@ -1164,7 +1198,7 @@
             document.getElementById('accountModalTitle').innerText = 'Editar Cuenta';
             document.getElementById('btnSaveAcc').innerText = 'Actualizar Cuenta';
             document.getElementById('accName').value = acc.name;
-            document.getElementById('accType').value = acc.type;
+            document.getElementById('accType').value = acc.type === 'savings' ? 'savings' : 'debit';
             document.getElementById('accCurrency').value = acc.currency;
             document.getElementById('accBalance').value = acc.balance;
 
@@ -1263,6 +1297,26 @@
             document.getElementById('txModal').classList.add('active');
         };
 
+        function applyAccountBalance(tx) {
+            const account = (window.state.accounts || []).find(a => a.id === tx.accountId);
+            if (!account) return;
+
+            let amountInAccCurrency = tx.originalAmount;
+            if (tx.currency !== account.currency) {
+                if (account.currency === 'VES') {
+                    amountInAccCurrency = tx.originalAmount * tx.appliedRate;
+                } else {
+                    amountInAccCurrency = tx.originalAmount / tx.appliedRate;
+                }
+            }
+
+            if (tx.type === 'expense') {
+                account.balance -= amountInAccCurrency;
+            } else if (tx.type === 'income') {
+                account.balance += amountInAccCurrency;
+            }
+        }
+
         function revertAccountBalance(tx) {
             const account = (window.state.accounts || []).find(a => a.id === tx.accountId);
             if (!account) return;
@@ -1277,21 +1331,24 @@
             }
 
             if (tx.type === 'expense') {
-                account.balance -= (account.type === 'credit' ? amountInAccCurrency : -amountInAccCurrency);
+                account.balance += amountInAccCurrency;
             } else if (tx.type === 'income') {
-                account.balance -= (account.type === 'credit' ? -amountInAccCurrency : amountInAccCurrency);
+                account.balance -= amountInAccCurrency;
             }
         }
 
         window.deleteTransaction = function(id) {
-            if (!confirm('¿Deseas eliminar este movimiento?')) return;
-
             const txIndex = (window.state.transactions || []).findIndex(t => t.id === id);
             if (txIndex !== -1) {
                 const tx = window.state.transactions[txIndex];
                 revertAccountBalance(tx);
                 window.state.transactions.splice(txIndex, 1);
                 saveStateToStorage();
+
+                showUndoToast('Movimiento eliminado', {
+                    type: 'DELETE_TX',
+                    data: tx
+                });
             }
         };
 
@@ -1350,24 +1407,6 @@
                 amountUSD = amountInput / appliedRate;
             }
 
-            const account = (window.state.accounts || []).find(a => a.id === accountId);
-            if (account) {
-                let amountInAccCurrency = amountInput;
-                if (currentCurrency !== account.currency) {
-                    if (account.currency === 'VES') {
-                        amountInAccCurrency = amountInput * appliedRate;
-                    } else {
-                        amountInAccCurrency = amountInput / appliedRate;
-                    }
-                }
-
-                if (currentTxType === 'expense') {
-                    account.balance += (account.type === 'credit' ? amountInAccCurrency : -amountInAccCurrency);
-                } else {
-                    account.balance += (account.type === 'credit' ? -amountInAccCurrency : amountInAccCurrency);
-                }
-            }
-
             const newTxData = {
                 id: editingId || Date.now().toString(),
                 accountId: accountId,
@@ -1381,12 +1420,19 @@
                 date: dateStr
             };
 
+            applyAccountBalance(newTxData);
+
             if (editingId) {
                 const index = window.state.transactions.findIndex(t => t.id === editingId);
                 if (index !== -1) window.state.transactions[index] = newTxData;
             } else {
                 if (!window.state.transactions) window.state.transactions = [];
                 window.state.transactions.unshift(newTxData);
+
+                showUndoToast('Movimiento registrado', {
+                    type: 'ADD_TX',
+                    data: newTxData
+                });
             }
 
             document.getElementById('txAmount').value = '';
