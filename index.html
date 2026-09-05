@@ -109,12 +109,13 @@
         .accounts-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .accounts-grid::-webkit-scrollbar { display: none; }
 
-        /* TARJETAS DE CUENTAS CON CÓDIGO DE COLOR */
-        .account-card { border: 1px solid var(--border-color); min-width: 160px; padding: 16px; border-radius: var(--radius-md); flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--card-shadow); transition: transform 0.15s; border-left: 6px solid transparent; }
+        /* TARJETAS DE CUENTAS CON BORDES Y PUNTOS DE COLOR ÚNICO */
+        .account-card { border: 1px solid var(--border-color); min-width: 175px; padding: 16px; border-radius: var(--radius-md); flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; box-shadow: var(--card-shadow); transition: transform 0.15s; border-left: 6px solid transparent; }
         .account-card:hover { transform: translateY(-2px); }
         .account-name { font-size: 0.82rem; opacity: 0.85; font-weight: 800; display: flex; align-items: center; justify-content: space-between; }
         .account-val { font-size: 1.15rem; font-weight: 800; }
-        .account-type-tag { font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; align-self: flex-start; background: rgba(0,0,0,0.06); }
+        .account-subval { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
+        .account-type-tag { font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; align-self: flex-start; background: rgba(0,0,0,0.06); margin-top: 2px; }
 
         .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .btn-action { border: 1px solid var(--border-color); color: var(--text-main); padding: 14px 8px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.9rem; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: var(--card-shadow); transition: transform 0.1s; text-align: center; }
@@ -132,7 +133,6 @@
         .section-title { font-size: 1.05rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; margin-top: 4px; color: var(--text-main); }
         .tx-list { display: flex; flex-direction: column; gap: 10px; }
         
-        /* MOVIMIENTOS CON BORDES DE COLOR POR CUENTA */
         .tx-item { background: var(--bg-card); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--card-shadow); border-left: 5px solid transparent; }
         .tx-left { display: flex; align-items: center; gap: 14px; }
         .tx-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--bg-card-alt); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
@@ -220,7 +220,7 @@
             .sidebar-btn.active { background: var(--accent-primary); color: #ffffff; }
 
             .app-header { padding: 0 0 10px 0; }
-            .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
             .account-card { min-width: auto; }
             .stats-grid { grid-template-columns: repeat(3, 1fr); }
             .stat-card.full { grid-column: span 1; }
@@ -426,7 +426,7 @@
                 <label class="form-label">Tipo de Cuenta</label>
                 <select class="form-input" id="accType">
                     <option value="debit">Débito / Cuenta Corriente / Efectivo</option>
-                    <option value="savings">Cuenta de Ahorros (Excluida del disponible)</option>
+                    <option value="savings">Cuenta de Ahorros (Excluida de vista principal y disponible)</option>
                     <option value="credit">Tarjeta de Crédito</option>
                 </select>
             </div>
@@ -572,16 +572,18 @@
 
         const TODAY = new Date().toISOString().split('T')[0];
 
-        // PALETA DINÁMICA DE COLORES DE CUENTA
+        // PALETA DE 10 COLORES TOTALMENTE DISTINTOS Y DIVERSIFICADOS
         const accountColorPalette = [
-            { bg: '#52B788', text: '#FFFFFF', tag: 'Débito / Efectivo' },   // Verde Suave
-            { bg: '#FF8FAB', text: '#FFFFFF', tag: 'Tarjeta de Crédito' },  // Rosa / Crédito
-            { bg: '#8ECAE6', text: '#1D3557', tag: 'Cuenta Azul' },         // Azul Claro
-            { bg: '#9C74E6', text: '#FFFFFF', tag: 'General' },            // Lila
-            { bg: '#FFB703', text: '#2B2238', tag: 'Amarillo Gold' },      // Amarillo
-            { bg: '#E76F51', text: '#FFFFFF', tag: 'Coral' },              // Coral
-            { bg: '#4EA8DE', text: '#FFFFFF', tag: 'Celeste' },            // Celeste
-            { bg: '#D8BBFF', text: '#2A004E', tag: 'Pastel Morado' }       // Lavanda
+            { bg: '#3A86EF', text: '#FFFFFF', tag: 'Azul Real' },       // 0. Azul
+            { bg: '#2EC4B6', text: '#FFFFFF', tag: 'Turquesa' },      // 1. Turquesa
+            { bg: '#FF006E', text: '#FFFFFF', tag: 'Magenta' },       // 2. Magenta / Rosa Fuerte
+            { bg: '#FF9F1C', text: '#FFFFFF', tag: 'Naranja' },       // 3. Naranja
+            { bg: '#8338EC', text: '#FFFFFF', tag: 'Morado' },        // 4. Morado Violeta
+            { bg: '#20BF55', text: '#FFFFFF', tag: 'Verde Esmeralda' },// 5. Verde brillante
+            { bg: '#FF5400', text: '#FFFFFF', tag: 'Coral Fuego' },    // 6. Coral intenso
+            { bg: '#FFD166', text: '#2B2238', tag: 'Amarillo Sol' },   // 7. Amarillo
+            { bg: '#7209B7', text: '#FFFFFF', tag: 'Índigo Oscuro' },  // 8. Índigo
+            { bg: '#00F5D4', text: '#15131C', tag: 'Cian Neón' }       // 9. Cian Neón
         ];
 
         window.state = {
@@ -598,16 +600,12 @@
         let incomeChart = null;
         let chartTimeframe = 'month';
 
+        // Obtener un color completamente único para cada cuenta según su índice en la lista general
         function getAccountColor(accId) {
             const accIndex = (window.state.accounts || []).findIndex(a => a.id === accId);
             if (accIndex === -1) {
-                return accountColorPalette[3];
+                return accountColorPalette[0];
             }
-            
-            const acc = window.state.accounts[accIndex];
-            if (acc.type === 'credit') return accountColorPalette[1];
-            if (acc.type === 'debit' && accIndex === 0) return accountColorPalette[0];
-            
             return accountColorPalette[accIndex % accountColorPalette.length];
         }
 
@@ -773,13 +771,33 @@
             const accContainer = document.getElementById('accountsContainer');
             accContainer.innerHTML = '';
 
-            (window.state.accounts || []).forEach((acc) => {
+            // Se filtran las cuentas para ignorar las de tipo ahorro ('savings') en la vista principal
+            const visibleAccounts = (window.state.accounts || []).filter(acc => acc.type !== 'savings');
+
+            if (visibleAccounts.length === 0) {
+                accContainer.innerHTML = '<div style="font-size:0.82rem; color:var(--text-muted); padding:10px 0;">No hay cuentas activas para mostrar en el inicio.</div>';
+            }
+
+            visibleAccounts.forEach((acc) => {
                 const isUSD = acc.currency === 'USD';
-                const symbol = isUSD ? '$' : 'Bs.';
+                
+                let mainValText = '';
+                let subValText = '';
+
+                if (isUSD) {
+                    const mainVal = acc.balance;
+                    const subValVes = acc.balance * todayRate;
+                    mainValText = `$ ${mainVal.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+                    subValText = `≈ ${subValVes.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})} Bs.`;
+                } else {
+                    const mainValBs = acc.balance;
+                    const subValUsd = acc.balance / todayRate;
+                    mainValText = `${mainValBs.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})} Bs.`;
+                    subValText = `≈ $ ${subValUsd.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+                }
                 
                 let typeText = 'Débito / Efectivo';
                 if (acc.type === 'credit') typeText = 'Tarjeta Crédito';
-                if (acc.type === 'savings') typeText = 'Ahorros (Excluido)';
 
                 const colorObj = getAccountColor(acc.id);
                 
@@ -789,7 +807,8 @@
                             <span>${acc.name}</span>
                             <span class="account-color-dot" style="background-color: ${colorObj.bg};"></span>
                         </span>
-                        <span class="account-val">${symbol} ${acc.balance.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                        <span class="account-val">${mainValText}</span>
+                        <span class="account-subval">${subValText}</span>
                         <span class="account-type-tag">${typeText}</span>
                     </div>
                 `;
@@ -973,6 +992,18 @@
             const isDark = (window.state.theme === 'dark');
             const legendTextColor = isDark ? '#E6E1EE' : '#2B2238';
 
+            const tooltipCallbacks = {
+                label: function(context) {
+                    const label = context.label || '';
+                    const value = context.parsed || 0;
+                    if (label === 'Sin Datos') return ' Sin movimientos';
+                    const dataset = context.dataset.data;
+                    const total = dataset.reduce((acc, curr) => acc + curr, 0);
+                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                    return ` ${label}: $${value.toFixed(2)} (${percentage}%)`;
+                }
+            };
+
             const ctxExp = document.getElementById('expensesChart').getContext('2d');
             if (expensesChart) expensesChart.destroy();
             expensesChart = new Chart(ctxExp, {
@@ -984,7 +1015,13 @@
                         backgroundColor: paletteColors
                     }]
                 },
-                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: legendTextColor, font: { family: 'Plus Jakarta Sans', weight: 'bold' } } } } }
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: legendTextColor, font: { family: 'Plus Jakarta Sans', weight: 'bold' } } },
+                        tooltip: { callbacks: tooltipCallbacks }
+                    }
+                }
             });
 
             const ctxInc = document.getElementById('incomeChart').getContext('2d');
@@ -998,7 +1035,13 @@
                         backgroundColor: ['#BDE0FE', '#A2D2FF', '#CDB4DB', '#FFC8DD', '#52B788']
                     }]
                 },
-                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: legendTextColor, font: { family: 'Plus Jakarta Sans', weight: 'bold' } } } } }
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: legendTextColor, font: { family: 'Plus Jakarta Sans', weight: 'bold' } } },
+                        tooltip: { callbacks: tooltipCallbacks }
+                    }
+                }
             });
         }
 
