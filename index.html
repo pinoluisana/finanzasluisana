@@ -11,9 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Librería para Gráficos (Chart.js) -->
+    <!-- Librerías Externas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Librería para Exportar a Excel (SheetJS) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
@@ -60,7 +59,6 @@
 
         .app-container { width: 100%; max-width: 480px; padding: 20px 16px; display: flex; flex-direction: column; gap: 18px; }
 
-        /* Vistas de Navegación */
         .view-section { display: none; flex-direction: column; gap: 18px; width: 100%; }
         .view-section.active { display: flex; }
 
@@ -70,7 +68,6 @@
         .avatar:hover { transform: scale(1.05); }
 
         .header-actions { display: flex; align-items: center; gap: 8px; }
-
         .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border-color); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-orange); cursor: pointer; font-size: 1rem; box-shadow: var(--card-shadow); transition: background 0.3s; }
 
         .bcv-pill { background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 30px; display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; box-shadow: var(--card-shadow); color: var(--text-main); }
@@ -109,7 +106,7 @@
         .tx-amount.income { color: var(--accent-green); }
         .tx-original { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
         .tx-actions { display: flex; gap: 8px; margin-top: 2px; }
-        .btn-tx-action { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; padding: 2px 4px; }
+        .btn-tx-action { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 2px 4px; }
         .btn-tx-action:hover { color: var(--text-main); }
         .btn-tx-action.delete:hover { color: var(--accent-pink); }
 
@@ -126,17 +123,17 @@
         .btn-excel { background: var(--accent-green); color: #ffffff; border: none; padding: 16px; border-radius: var(--radius-md); font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; width: 100%; box-shadow: var(--card-shadow); transition: opacity 0.2s; }
         .btn-excel:hover { opacity: 0.9; }
 
-        .chart-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--card-shadow); }
-        .chart-box h4 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-        .chart-container { position: relative; width: 100%; max-width: 280px; margin: 0 auto; }
-
-        /* Listas editables en perfil */
-        .management-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--card-shadow); }
+        /* Módulos de Gestión de Cuentas y Categorías */
+        .management-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--card-shadow); }
         .management-list { display: flex; flex-direction: column; gap: 10px; }
         .manage-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--bg-input); border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 700; }
         .manage-item-info { display: flex; align-items: center; gap: 10px; }
 
-        /* Barra de Navegación Inferior */
+        .chart-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--card-shadow); }
+        .chart-box h4 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .chart-container { position: relative; width: 100%; max-width: 280px; margin: 0 auto; }
+
+        /* Navegación Inferior */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 68px; background: var(--nav-bg); backdrop-filter: blur(12px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 90; }
         .nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; width: 50%; transition: color 0.2s; }
         .nav-item i { font-size: 1.25rem; }
@@ -189,7 +186,7 @@
             </div>
         </div>
 
-        <!-- VISTA 1: INICIO / DASHBOARD PRINCIPAL -->
+        <!-- VISTA 1: INICIO -->
         <div id="view-home" class="view-section active">
             <div class="card-balance">
                 <div class="balance-label">Disponible Total</div>
@@ -200,7 +197,7 @@
                 </div>
             </div>
 
-            <!-- Módulo de Cuentas Financieras -->
+            <!-- Resumen de Cuentas -->
             <div class="accounts-header">
                 <span style="font-weight: 800; font-size: 1rem;">Mis Cuentas</span>
                 <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddAccountModal()">+ Nueva Cuenta</span>
@@ -218,19 +215,18 @@
 
             <div class="section-title">
                 <span>Últimos Movimientos</span>
-                <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="clearAll()">Limpiar</span>
             </div>
 
             <div class="tx-list" id="txContainer"></div>
         </div>
 
-        <!-- VISTA 2: PESTAÑA PERFIL -->
+        <!-- VISTA 2: PERFIL & CONFIGURACIÓN -->
         <div id="view-profile" class="view-section">
             <div class="profile-card-header">
                 <div class="avatar-large">L</div>
                 <div>
                     <h3 style="font-size: 1.15rem; font-weight: 800;">Luisana Pino</h3>
-                    <p style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Resumen General de Cuentas</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Gestión de Cuentas & Categorías</p>
                 </div>
             </div>
 
@@ -249,27 +245,27 @@
                 </div>
             </div>
 
-            <button class="btn-excel" onclick="exportToExcel()">
-                <i class="fa-solid fa-file-excel"></i> Exportar Mis Datos a Excel (.xlsx)
-            </button>
-
-            <!-- GESTIÓN DE CUENTAS -->
+            <!-- MÓDULO GESTIÓN DE CUENTAS -->
             <div class="management-box">
                 <div class="section-title" style="margin-top: 0;">
                     <span>Mis Cuentas</span>
-                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddAccountModal()">+ Crear</span>
+                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddAccountModal()">+ Crear Cuenta</span>
                 </div>
                 <div class="management-list" id="manageAccountsList"></div>
             </div>
 
-            <!-- GESTIÓN DE CATEGORÍAS -->
+            <!-- MÓDULO GESTIÓN DE CATEGORÍAS -->
             <div class="management-box">
                 <div class="section-title" style="margin-top: 0;">
                     <span>Mis Categorías</span>
-                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddCategoryModal()">+ Crear</span>
+                    <span style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 800; cursor: pointer;" onclick="openAddCategoryModal()">+ Crear Categoría</span>
                 </div>
                 <div class="management-list" id="manageCategoriesList"></div>
             </div>
+
+            <button class="btn-excel" onclick="exportToExcel()">
+                <i class="fa-solid fa-file-excel"></i> Exportar Mis Datos a Excel (.xlsx)
+            </button>
 
             <div class="chart-box">
                 <h4><i class="fa-solid fa-chart-pie" style="color: var(--accent-pink);"></i> ¿En qué has gastado?</h4>
@@ -287,7 +283,7 @@
         </div>
     </div>
 
-    <!-- Barra de Navegación Inferior Fija -->
+    <!-- Navegación Inferior -->
     <nav class="bottom-nav">
         <button class="nav-item active" id="navHome" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
@@ -326,7 +322,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Saldo</label>
+                <label class="form-label">Saldo Inicial / Actual</label>
                 <input type="number" step="0.01" class="form-input" id="accBalance" placeholder="0.00">
             </div>
             <button class="btn-submit" id="btnSaveAcc" onclick="saveNewAccount()">Guardar Cuenta</button>
@@ -424,7 +420,7 @@
         </div>
     </div>
 
-    <!-- Módulo JS de Firebase Integrado con la Lógica -->
+    <!-- Módulo JS de Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -684,7 +680,7 @@
             document.getElementById('profileMonthlyExp').innerText = `$${monthlyExp.toFixed(2)}`;
             document.getElementById('profileWeeklyExp').innerText = `$${weeklyExp.toFixed(2)}`;
 
-            // Render lista de gestión de Cuentas en Perfil
+            // Render Lista Completa de Cuentas en Perfil
             const manageAccsList = document.getElementById('manageAccountsList');
             manageAccsList.innerHTML = '';
             (window.state.accounts || []).forEach(acc => {
@@ -703,7 +699,7 @@
                 `;
             });
 
-            // Render lista de gestión de Categorías en Perfil
+            // Render Lista Completa de Categorías en Perfil
             const manageCatsList = document.getElementById('manageCategoriesList');
             manageCatsList.innerHTML = '';
             (window.state.categories || []).forEach(cat => {
@@ -852,7 +848,6 @@
                     const oldName = window.state.categories[index].name;
                     window.state.categories[index] = { id: editingId, name, icon: emoji, type };
                     
-                    // Actualizar transacciones antiguas con el nuevo nombre
                     (window.state.transactions || []).forEach(tx => {
                         if (tx.category === oldName) tx.category = name;
                     });
@@ -1146,13 +1141,6 @@
 
         window.closeModal = function(id) {
             document.getElementById(id).classList.remove('active');
-        };
-
-        window.clearAll = function() {
-            if (confirm('¿Deseas reiniciar todas las transacciones guardadas?')) {
-                window.state.transactions = [];
-                saveStateToStorage();
-            }
         };
     </script>
 </body>
