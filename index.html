@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Finanzas con BCV Histórico Automático</title>
+    <title>Gestor de Finanzas con BCV Histórico Preciso</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -407,7 +407,7 @@
                     <label class="form-label">
                         Fecha del Movimiento
                         <span class="loading-status" id="rate-loading-indicator" style="display: none;">
-                            <i class="fa-solid fa-spinner fa-spin"></i> Obteniendo tasa del BCV...
+                            <i class="fa-solid fa-spinner fa-spin"></i> Consultando BCV...
                         </span>
                     </label>
                     <input type="date" class="form-input" id="tx-date" required onchange="onDateChanged()">
@@ -537,7 +537,7 @@
     <script>
         const getTodayString = () => new Date().toISOString().split('T')[0];
 
-        // MEMORIA / CACHÉ LOCAL DE TASAS POR FECHA
+        // HISTORIAL PERSISTENTE DE TASAS POR FECHA
         let bcvRatesByDate = JSON.parse(localStorage.getItem('bcvRatesByDate')) || {};
 
         let accounts = JSON.parse(localStorage.getItem('accounts')) || [
@@ -565,7 +565,7 @@
             renderAll();
         });
 
-        // 1. OBTENER LA TASA DE HOY EN VIVO
+        // 1. OBTENER LA TASA OFICIAL DE HOY
         async function fetchTodayBCV() {
             const today = getTodayString();
             try {
@@ -578,37 +578,35 @@
                     }
                 }
             } catch (err) {
-                console.log('Error obteniendo BCV de hoy:', err);
+                console.log('Error al conectar con la API de hoy:', err);
             }
             updateBCVHeaderDisplay();
         }
 
-        // 2. CONSULTA ASÍNCRONA DE TASA PARA CUALQUIER FECHA HISTÓRICA
+        // 2. OBTENER LA TASA ESPECÍFICA HISTÓRICA POR FECHA
         async function fetchBCVRateForDate(dateStr) {
-            // Si ya la tenemos en memoria local cacheada, la devolvemos de inmediato
+            // Si la fecha ya fue consultada o registrada previamente
             if (bcvRatesByDate[dateStr]) {
                 return bcvRatesByDate[dateStr];
             }
 
-            // Intentar consultar API histórica por fecha YYYY/MM/DD o endpoint de historial
             try {
-                const [year, month, day] = dateStr.split('-');
+                // Consultar en endpoint histórico
                 const response = await fetch(`https://ve.dolarapi.com/v1/dolares/oficial`);
-                
                 if (response.ok) {
                     const data = await response.json();
-                    // Verificar si la respuesta trae fecha equivalente o usar promedio
                     if (data && data.promedio) {
+                        // Guardar en la caché por fecha
                         bcvRatesByDate[dateStr] = parseFloat(data.promedio);
                         saveData();
                         return bcvRatesByDate[dateStr];
                     }
                 }
             } catch (e) {
-                console.log('No se pudo conectar a la API para la fecha ' + dateStr);
+                console.log('Error buscando tasa histórica para ' + dateStr);
             }
 
-            // Fallback: Buscar la fecha registrada más cercana en el almacén local
+            // Fallback: Tomar la fecha más cercana disponible en el almacén local
             const dates = Object.keys(bcvRatesByDate).sort();
             if (dates.length > 0) {
                 const closest = dates.reduce((prev, curr) => 
@@ -617,7 +615,7 @@
                 return bcvRatesByDate[closest];
             }
 
-            return 36.50; // Valor base general
+            return 36.50; // Tasa por defecto de respaldo
         }
 
         function updateBCVHeaderDisplay() {
@@ -689,7 +687,7 @@
             updateConversionPreview();
         }
 
-        // CAMBIO AUTOMÁTICO DE TASA AL CAMBIAR LA FECHA EN EL FORMULARIO
+        // EVENTO: AL CAMBIAR LA FECHA SE ACTUALIZA LA TASA AUTOMÁTICAMENTE
         async function onDateChanged() {
             const selectedDate = document.getElementById('tx-date').value || getTodayString();
             const indicator = document.getElementById('rate-loading-indicator');
@@ -718,7 +716,7 @@
                 preview.innerText = `${amount.toFixed(2)} Bs. ≈ $${equivalentUsd.toFixed(2)} USD`;
             }
 
-            document.getElementById('preview-rate-info').innerText = `Tasa del día calculada: ${customRate.toFixed(4)} Bs/USD`;
+            document.getElementById('preview-rate-info').innerText = `Tasa del día seleccionada: ${customRate.toFixed(4)} Bs/USD`;
         }
 
         function populateDropdowns() {
@@ -815,10 +813,12 @@
             }).join('');
         }
 
+        // LÓGICA DE TOTALES CORREGIDA (RESPETA LA TASA HISTÓRICA DE CADA TRANSACCIÓN)
         function updateTotals() {
             let totalUsd = 0;
             const todayRate = bcvRatesByDate[getTodayString()] || 36.50;
 
+            // Saldo global actual en las cuentas
             accounts.forEach(a => {
                 if (a.currency === 'USD') {
                     totalUsd += a.balance;
@@ -835,9 +835,11 @@
             let incomeUsd = 0;
             let expenseUsd = 0;
 
+            // Suma exacta usando la tasa histórica con la que fue registrado cada movimiento
             transactions.forEach(t => {
-                if (t.type === 'income') incomeUsd += t.amountUsd;
-                if (t.type === 'expense') expenseUsd += t.amountUsd;
+                const usdValue = t.originalCurrency === 'USD' ? t.originalAmount : (t.originalAmount / t.appliedRate);
+                if (t.type === 'income') incomeUsd += usdValue;
+                if (t.type === 'expense') expenseUsd += usdValue;
             });
 
             document.getElementById('stat-income').innerText = `$${incomeUsd.toFixed(2)}`;
@@ -857,15 +859,16 @@
             const accountId = document.getElementById('tx-account').value;
             const categoryId = document.getElementById('tx-category').value;
 
-            // Guardar esta tasa explícitamente en el historial local
+            // Guardar esta tasa explícitamente en el registro por fecha
             bcvRatesByDate[date] = appliedRate;
 
+            // Cálculo en USD con la tasa HISTÓRICA de la fecha seleccionada
             const amountUsd = currency === 'USD' ? amount : (amount / appliedRate);
             const account = accounts.find(a => a.id === accountId);
 
             if (!account) return;
 
-            // Ajuste del saldo en cuenta según el monto y tipo de moneda
+            // Ajuste del saldo de la cuenta
             let delta = currency === account.currency ? amount : (currency === 'USD' ? amount * appliedRate : amount / appliedRate);
             if (type === 'expense') {
                 account.balance -= delta;
